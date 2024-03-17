@@ -3,6 +3,6 @@ export default interface User {
     email: string,
     password: string,
     stateAccount: boolean,
-    dateRegister: Date,
+    dateRegister: string,
     city: string
 }

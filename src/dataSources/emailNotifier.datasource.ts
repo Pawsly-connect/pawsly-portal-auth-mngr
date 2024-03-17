@@ -1,5 +1,8 @@
 import emailRepository from "../core/repositories/email.repository";
 import nodemailer from "nodemailer";
+import debug from "debug";
+
+const logger = debug("paw:emailNotifier.datasource");
 
 class EmailNotifier implements emailRepository {
     public sendConfirmationEmail(email: string): Promise<any> {
