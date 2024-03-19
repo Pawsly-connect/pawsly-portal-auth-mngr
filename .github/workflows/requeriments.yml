@@ -23,6 +23,3 @@ jobs:
           args: >
             -Dsonar.organization=pawsly-connect
             -Dsonar.projectKey=pawsly-portal-auth-mngr
-            -Dsonar.sources=lib/
-            -Dsonar.test.exclusions=tests/**
-            -Dsonar.tests=tests/
