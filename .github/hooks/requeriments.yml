@@ -6,6 +6,18 @@ on:
       - master
       - staging
 jobs:
-  requirements-backend:
-    uses: Pawsly-connect/pawsly-pipeline/.github/workflows/requeriments_backend.yml@master
-    secrets: inherit
+  runs-on: ubuntu-latest
+  steps:
+  - uses: actions/checkout@v4
+    with:
+      fetch-depth: 0
+  - name: Analyze with SonarCloud
+    uses: sonarsource/sonarcloud-github-action@master
+    with:
+      projectBaseDir: src
+      args: >
+        -Dsonar.organization=pawsly-connect
+        -Dsonar.projectKey=pawsly-connect
+        -Dsonar.sources=lib/
+        -Dsonar.test.exclusions=tests/**
+        -Dsonar.tests=tests/
