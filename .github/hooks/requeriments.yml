@@ -5,7 +5,6 @@ on:
       - qa
       - master
       - staging
-
 jobs:
   requirements-frontend:
     uses: Pawsly-connect/pawsly-pipeline/.github/workflows/requeriments_backend.yml@master
