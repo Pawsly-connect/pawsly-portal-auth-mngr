@@ -6,6 +6,6 @@ on:
       - master
       - staging
 jobs:
-  requirements-frontend:
+  requirements-backend:
     uses: Pawsly-connect/pawsly-pipeline/.github/workflows/requeriments_backend.yml@master
     secrets: inherit
