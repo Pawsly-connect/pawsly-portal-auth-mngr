@@ -1,0 +1,4 @@
+#!/bin/sh
+
+npm run prebuild
+echo "Pre commit finished"
