@@ -24,4 +24,4 @@ jobs:
             -Dsonar.organization=pawsly-connect
             -Dsonar.projectKey=Pawsly-connect_pawsly-portal-auth-mngr
             -Dsonar.branch.name=${env.CURRENT_BRANCH}
-            -Dsonar.pullrequest.branch=qa
+            -Dsonar.branch.name=qa
