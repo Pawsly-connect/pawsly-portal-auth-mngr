@@ -1,0 +1,27 @@
+name: Requirements
+on:
+  pull_request:
+    branches:
+      - qa
+      - master
+      - staging
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Analyze with SonarCloud
+        uses: sonarsource/sonarcloud-github-action@master
+
+        with:
+          projectBaseDir: src
+          args: >
+            -Dsonar.organization=pawsly-connect
+            -Dsonar.projectKey=Pawsly-connect_pawsly-portal-auth-mngr
+            -Dsonar.branch.name=${env.CURRENT_BRANCH}
+            -Dsonar.branch.name=qa
