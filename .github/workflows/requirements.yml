@@ -12,4 +12,5 @@ jobs:
     uses: Pawsly-connect/pawsly-pipeline/.github/workflows/requirements_backend.yml@feature/add_pipeline
     with:
       project-name: 'pawsly-portal-auth-mngr'
+      organization: 'Pawsly-connect'
     secrets: inherit
