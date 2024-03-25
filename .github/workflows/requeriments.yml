@@ -22,6 +22,6 @@ jobs:
           projectBaseDir: src
           args: >
             -Dsonar.organization=pawsly-connect
-            -Dsonar.projectKey=pawsly-portal-auth-mngr
+            -Dsonar.projectKey=Pawsly-connect_pawsly-portal-auth-mngr
             -Dsonar.branch.name=${env.CURRENT_BRANCH}
             -Dsonar.pullrequest.branch=qa
