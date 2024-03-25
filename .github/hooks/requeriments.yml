@@ -1,0 +1,12 @@
+name: Requirements
+on:
+  pull_request:
+    branches:
+      - qa
+      - master
+      - staging
+
+jobs:
+  requirements-frontend:
+    uses: Pawsly-connect/pawsly-pipeline/.github/workflows/requeriments_backend.yml@master
+    secrets: inherit
