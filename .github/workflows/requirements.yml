@@ -1,0 +1,14 @@
+name: requirements-project
+
+on:
+  pull_request:
+    branches:
+      - staging
+      - master
+
+jobs:
+  requirements:
+    uses: Pawsly-connect/pawsly-pipeline/.github/workflows/requirements_backend.yml@feature/add_pipeline
+    with:
+      project-key: 'Pawsly-connect_pawsly-portal-auth-mngr'
+    secrets: inherit
