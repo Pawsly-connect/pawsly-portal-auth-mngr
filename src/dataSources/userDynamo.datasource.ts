@@ -62,7 +62,7 @@ class UserDynamo implements userRepository {
         }
     }
 
-    public async update(email: String): Promise<any> {
+    public async update(email: string): Promise<any> {
         const docClient = this.client();
         const params = {
             TableName: "users",
@@ -89,7 +89,7 @@ class UserDynamo implements userRepository {
         }
     }
 
-    public async delete(email: String): Promise<any> {
+    public async delete(email: string): Promise<any> {
         const docClient = this.client();
         const params = {
             TableName: "users",

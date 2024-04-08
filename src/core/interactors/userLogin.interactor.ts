@@ -40,7 +40,7 @@ const userLogin = (userRepository: UserRepository) => async (user: User) => {
         return {
             body: { code: 3002, msg: error.message },
             statusCode: 500
-        };  
+        };
     }
 };
 
