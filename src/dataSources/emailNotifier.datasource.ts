@@ -14,6 +14,7 @@ class EmailNotifier implements emailRepository {
             if(error){throw new Error(error.message)}
             return data;
         } catch (error) {
+            logger(error);
             throw new Error(error);
         }
     }
@@ -24,6 +25,7 @@ class EmailNotifier implements emailRepository {
             const rendered = await templates.render(template, data);
             return rendered;
         } catch (error) {
+            logger(error);
             throw new Error(error);
         }
     }

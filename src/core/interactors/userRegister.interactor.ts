@@ -3,6 +3,9 @@ import EmailRepository from "../repositories/email.repository";
 import UserRepository from "../repositories/user.repository";
 import crypto from 'crypto-js';
 import * as path from 'path';
+import debug from "debug";
+
+const logger = debug("paw:userRegister.interactor");
 
 const userRegister = (userRepository: UserRepository, emailRepository: EmailRepository) => async (user: User) => {
     try {
@@ -11,7 +14,7 @@ const userRegister = (userRepository: UserRepository, emailRepository: EmailRepo
         user.password = crypto.HmacSHA1(user.password, process.env.KEY_SHA1).toString();
         const users = await userRepository.read(user.email);
         if (users.ScannedCount === 0) {
-            const result = await userRepository.create(user);
+            await userRepository.create(user);
             const template = path.join(__dirname, '../../..', 'statics/verificationTemplate.html');
             const dataTemplate = {
                 nombre: user.name,
@@ -25,7 +28,7 @@ const userRegister = (userRepository: UserRepository, emailRepository: EmailRepo
                 subject: 'Confirma tu cuenta en Pawsly',
                 html: rendered.html
             };
-            const resultEmail = await emailRepository.sendEmail(payloadEmail);
+            await emailRepository.sendEmail(payloadEmail);
             return {
                 body: { code: 1001, msg: `Usuario guardado correctamente` },
                 statusCode: 201
@@ -37,8 +40,9 @@ const userRegister = (userRepository: UserRepository, emailRepository: EmailRepo
             };
         }
     } catch (error) {
+        logger(error.message);
         return {
-            body: { code: 3001, msg: error },
+            body: { code: 3001, msg: error.message },
             statusCode: 500
         };
     }
