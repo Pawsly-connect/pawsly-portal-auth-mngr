@@ -1,11 +1,47 @@
 import User from "../entities/User";
 import EmailRepository from "../repositories/email.repository";
 import UserRepository from "../repositories/user.repository";
+import crypto from 'crypto-js';
+import * as path from 'path';
 
 const userRegister = (userRepository: UserRepository, emailRepository: EmailRepository) => async (user: User) => {
-    const response = await userRepository.saveUser(user);
-    // await emailRepository.sendConfirmationEmail(user.email);
-    return response;
+    try {
+        user.stateAccount = false;
+        user.dateRegister = new Date().toISOString();
+        user.password = crypto.HmacSHA1(user.password, process.env.KEY_SHA1).toString();
+        const users = await userRepository.read(user.email);
+        if (users.ScannedCount === 0) {
+            const result = await userRepository.create(user);
+            const template = path.join(__dirname, '../../..', 'statics/verificationTemplate.html');
+            const dataTemplate = {
+                nombre: user.name,
+                email: Buffer.from(user.email).toString('base64'),
+                base_url: process.env.HOST_FRONT
+            };
+            const rendered = await emailRepository.renderTemplate(template, dataTemplate);
+            const payloadEmail = {
+                from: 'Pawsly <pawsly-connect@resend.dev>',
+                to: [user.email],
+                subject: 'Confirma tu cuenta en Pawsly',
+                html: rendered.html
+            };
+            const resultEmail = await emailRepository.sendEmail(payloadEmail);
+            return {
+                body: { code: 1001, msg: `Usuario guardado correctamente` },
+                statusCode: 201
+            }
+        }else if (users.ScannedCount > 0) {
+            return {
+                body: { code: 2001, msg: `El usuario ya existe` },
+                statusCode: 400
+            };
+        }
+    } catch (error) {
+        return {
+            body: { code: 3001, msg: error },
+            statusCode: 500
+        };
+    }
 };
 
 export default userRegister;

@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import dotEnv from 'dotenv';
 import cors from 'cors';
 import registerController from './controllers/registerHttp.controller';
+import loginController from './controllers/loginHttp.controller';
 import debug from "debug";
 
 dotEnv.config();
@@ -18,6 +19,7 @@ app.use(cors({
 }));
 
 app.post('/user/register', registerController);
+app.post('/user/login', loginController);
 
 app.listen(PORT, () => {
    logger(`server started at http://localhost:${PORT}`);
