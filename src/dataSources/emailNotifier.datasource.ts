@@ -18,7 +18,7 @@ class EmailNotifier implements emailRepository {
         }
     }
 
-    public async renderTemplate(template: string, data: Object): Promise<any> {
+    public async renderTemplate(template: string, data: object): Promise<any> {
         try {
             const templates = new emailTemplates();
             const rendered = await templates.render(template, data);
