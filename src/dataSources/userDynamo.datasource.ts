@@ -3,7 +3,6 @@ import { DynamoDBDocumentClient, PutCommand, QueryCommand } from "@aws-sdk/lib-d
 import debug from "debug";
 import User from "../core/entities/User";
 import userRepository from "../core/repositories/user.repository";
-import { error } from "console";
 
 const logger = debug("paw:userDynamo.datasource");
 
