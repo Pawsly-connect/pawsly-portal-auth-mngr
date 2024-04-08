@@ -1,0 +1,17 @@
+name: Deploy PROD
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+    deploy-prod:
+        uses: Pawsly-connect/pawsly-pipeline/.github/workflows/deploy_backend.yml@feature/add_pipeline
+        with:
+            environment: pr
+            node-version: 20.x
+            build-command: npm run build
+            function-name: lbda-prod-portal-auth-mngr
+            files-to-compress: "build node_modules"
+        secrets: inherit
