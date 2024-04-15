@@ -38,7 +38,7 @@ class EmailNotifier implements emailRepository {
             logger(error);
             throw new Error(error);
         } finally {
-            //transporter.close();
+            // transporter.close();
         }
     }
 

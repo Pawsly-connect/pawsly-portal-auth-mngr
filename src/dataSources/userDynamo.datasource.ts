@@ -37,7 +37,7 @@ class UserDynamo implements userRepository {
             logger(error);
             throw new Error(error);
         } finally {
-            //this.clientDynamoDB.destroy();
+            // this.clientDynamoDB.destroy();
         }
     }
 
@@ -58,7 +58,7 @@ class UserDynamo implements userRepository {
             logger(error);
             throw new Error(error);
         } finally {
-            //this.clientDynamoDB.destroy();
+            // this.clientDynamoDB.destroy();
         }
     }
 
@@ -85,7 +85,7 @@ class UserDynamo implements userRepository {
             logger(error);
             throw new Error(error);
         } finally {
-            //this.clientDynamoDB.destroy();
+            // this.clientDynamoDB.destroy();
         }
     }
 
@@ -108,7 +108,7 @@ class UserDynamo implements userRepository {
             logger(error);
             throw new Error(error);
         } finally {
-            //this.clientDynamoDB.destroy();
+            // this.clientDynamoDB.destroy();
         }
     }
 }
