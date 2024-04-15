@@ -1,7 +1,6 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, PutCommand, QueryCommand, UpdateCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
 import debug from "debug";
-import crypto from 'crypto-js';
 import User from "../core/entities/User";
 import userRepository from "../core/repositories/user.repository";
 
@@ -9,77 +8,107 @@ const logger = debug("paw:userDynamo.datasource");
 
 class UserDynamo implements userRepository {
 
-    public async saveUser(user: User): Promise<any> {
-        user.stateAccount = false;
-        user.dateRegister = new Date().toISOString();
-        user.password = crypto.HmacSHA1(user.password, process.env.KEY_SHA1).toString();
-        const users = await this.read(user);
-        if (users.ScannedCount === 0) {
-            const result = await this.create(user);
-            if (result.$metadata.httpStatusCode === 200) {
-                return {
-                    body: { code: 1001, msg: `Usuario guardado correctamente` },
-                    statusCode: 201
-                }
-            } else {
-                return {
-                    body: { code: 3002, msg: `Hubo un error al guardar el usuario: ${result}` },
-                    statusCode: 500
-                }
-            }
-        }else if (users.ScannedCount > 0) {
-            return {
-                body: { code: 2001, msg: `El usuario ya existe` },
-                statusCode: 400
-            };
-        }
-        return {
-            body: { code: 3001, msg: `Error generico: ${users} - ${users.code}` },
-            statusCode: 500
-        };
-    }
-
-    private client() {
-        const clientDynamoDB = new DynamoDBClient({
-            region: process.env.AWS_REGION,
-            endpoint: process.env.ENDPOINT_DYNAMODB
+    private client(){
+        const dynamoClient = new DynamoDBClient({
+            endpoint: process.env.DYNAMO_ENDPOINT,
+            region: process.env.AWS_DEFAULT_REGION
         });
-        return DynamoDBDocumentClient.from(clientDynamoDB);
+        return DynamoDBDocumentClient.from(dynamoClient);
     }
 
-    private async read(user: User) {
-        const docClient = this.client();
-        const params = {
-            TableName: "users",
-            KeyConditionExpression: "#email = :email",
-            ExpressionAttributeNames: {
-                "#email": "email"
-            },
-            ExpressionAttributeValues: { ":email": user.email }
-        };
+    public async read(email: string): Promise<any> {
         try {
-            const data = await docClient.send(new QueryCommand(params));
-            logger('result: ' + JSON.stringify(data));
+            const docClient = this.client();
+            const params = {
+                TableName: "users",
+                KeyConditionExpression: "#email = :email",
+                ExpressionAttributeNames: {
+                    "#email": "email"
+                },
+                ExpressionAttributeValues: { ":email": email }
+            };
+            const data: any = await docClient.send(new QueryCommand(params));
+            if (data.$metadata.httpStatusCode >= 400) {
+                logger(data.toString());
+                throw new Error(data.toString());
+            }
             return data;
-        } catch (error) {
-            logger("Error: ", error);
-            return error;
+        } catch (error: any) {
+            logger(error);
+            throw new Error(error);
+        } finally {
+            //this.clientDynamoDB.destroy();
         }
     }
 
-    private async create(user: User) {
-        const docClient = this.client();
-        const params = {
-            TableName: "users",
-            Item: user,
-        };
+    public async create(user: User): Promise<any> {
         try {
-            const data = await docClient.send(new PutCommand(params));
-            logger('result: ' + JSON.stringify(data));
+            const docClient = this.client();
+            const params = {
+                TableName: "users",
+                Item: user,
+            };
+            const data: any = await docClient.send(new PutCommand(params));
+            if (data.$metadata.httpStatusCode >= 400) {
+                logger(data.toString());
+                throw new Error(data.toString());
+            }
             return data;
-        } catch (error) {
-            logger("Error: ", error);
-            return error;
+        } catch (error: any) {
+            logger(error);
+            throw new Error(error);
+        } finally {
+            //this.clientDynamoDB.destroy();
+        }
+    }
+
+    public async update(email: string): Promise<any> {
+        try {
+            const docClient = this.client();
+            const params = {
+                TableName: "users",
+                Key: {
+                    'email': email,
+                },
+                UpdateExpression: "set stateAccount = :stateAccount",
+                ExpressionAttributeValues: {
+                    ":stateAccount": true,
+                }
+            };
+            const data: any = await docClient.send(new UpdateCommand(params));
+            if (data.$metadata.httpStatusCode >= 400) {
+                logger(data.toString());
+                throw new Error(data.toString());
+            }
+            return data;
+        } catch (error: any) {
+            logger(error);
+            throw new Error(error);
+        } finally {
+            //this.clientDynamoDB.destroy();
+        }
+    }
+
+    public async delete(email: string): Promise<any> {
+        try {
+            const docClient = this.client();
+            const params = {
+                TableName: "users",
+                Key: {
+                    'email': email,
+                }
+            };
+            const data: any = await docClient.send(new DeleteCommand(params));
+            if (data.$metadata.httpStatusCode >= 400) {
+                logger(data.toString());
+                throw new Error(data.toString());
+            }
+            return data;
+        } catch (error: any) {
+            logger(error);
+            throw new Error(error);
+        } finally {
+            //this.clientDynamoDB.destroy();
         }
     }
 }
