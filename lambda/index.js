@@ -1,4 +1,4 @@
-const app = require('./build/app').default;
+const app = require('./build/index').default;
 const isInLambda = !!process.env.LAMBDA_TASK_ROOT;
 if (isInLambda) {
     const serverlessExpress = require('aws-serverless-express');

@@ -7,7 +7,6 @@ import loginController from './controllers/loginHttp.controller';
 import debug from "debug";
 
 dotEnv.config();
-const PORT = 3000;
 const logger = debug("paw:index");
 
 const app = express();
@@ -21,6 +20,11 @@ app.use(cors({
 app.post('/user/register', registerController);
 app.post('/user/login', loginController);
 
-app.listen(PORT, () => {
-   logger(`server started at http://localhost:${PORT}`);
-});
+app.use((req, res) => {
+	return res.status(404).json({
+		code: 3003,
+		msg: `Route ${req.url} not found.`
+	}).end();
+})
+
+export default app;

@@ -10,7 +10,7 @@ const userLogin = (userRepository: UserRepository) => async (user: User) => {
         const users = await userRepository.read(user.email);
         if (users.ScannedCount === 1) {
             const dataUser = users.Items[0];
-            const passwordHASH = crypto.HmacSHA1(user.password, process.env.KEY_SHA1).toString(crypto.enc.Hex);
+            const passwordHASH = crypto.HmacSHA1(user.password, process.env.KEY_SHA1 as string).toString(crypto.enc.Hex);
             if(passwordHASH === dataUser.password){
                 if(dataUser.stateAccount){
                     return {
@@ -35,7 +35,7 @@ const userLogin = (userRepository: UserRepository) => async (user: User) => {
                 statusCode: 400
             }
         }
-    } catch (error) {
+    } catch (error: any) {
         logger(error.message);
         return {
             body: { code: 3002, msg: error.message },

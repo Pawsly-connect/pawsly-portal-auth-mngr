@@ -11,7 +11,7 @@ const userRegister = (userRepository: UserRepository, emailRepository: EmailRepo
     try {
         user.stateAccount = false;
         user.dateRegister = new Date().toISOString();
-        user.password = crypto.HmacSHA1(user.password, process.env.KEY_SHA1).toString();
+        user.password = crypto.HmacSHA1(user.password, process.env.KEY_SHA1 as string).toString();
         const users = await userRepository.read(user.email);
         if (users.ScannedCount === 0) {
             await userRepository.create(user);
@@ -23,7 +23,7 @@ const userRegister = (userRepository: UserRepository, emailRepository: EmailRepo
             };
             const rendered = await emailRepository.renderTemplate(template, dataTemplate);
             const payloadEmail = {
-                from: 'Pawsly <pawsly-connect@resend.dev>',
+                from: 'Pawsly <pawsly.connect@gmail.com>',
                 to: [user.email],
                 subject: 'Confirma tu cuenta en Pawsly',
                 html: rendered.html
@@ -39,7 +39,7 @@ const userRegister = (userRepository: UserRepository, emailRepository: EmailRepo
                 statusCode: 400
             };
         }
-    } catch (error) {
+    } catch (error: any) {
         logger(error.message);
         return {
             body: { code: 3001, msg: error.message },

@@ -13,5 +13,5 @@ jobs:
             node-version: 20.x
             build-command: npm run build
             function-name: lbda-stg-portal-auth-mngr
-            files-to-compress: "build node_modules"
+            files-to-compress: "build node_modules statics"
         secrets: inherit

@@ -1,21 +1,44 @@
 import emailRepository from "../core/repositories/email.repository";
 import debug from "debug";
-import { Resend } from 'resend';
+import {
+    Transporter,
+    SendMailOptions,
+    createTransport
+} from "nodemailer";
 import emailTemplates from 'swig-email-templates';
 
 const logger = debug("paw:emailNotifier.datasource");
 
+const conectionEmailSettings: any = {
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT,
+    requireTLS: false,
+    secured: true,
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD
+    }
+};
+
 class EmailNotifier implements emailRepository {
 
-    public async sendEmail(payload: any): Promise<any> {
+    private getTransport(){
+        const transport = createTransport(conectionEmailSettings);
+        transport.verify();
+        return transport;
+    }
+
+    public async sendEmail(payload: SendMailOptions): Promise<any> {
         try {
-            const resend = new Resend(process.env.API_KEY_RESEND);
-            const {data, error} = await resend.emails.send(payload);
-            if(error){throw new Error(error.message)}
-            return data;
-        } catch (error) {
+            const transporter = this.getTransport();
+            const infoSend = await transporter.sendMail(payload);
+            logger(infoSend);
+            return infoSend;
+        } catch (error: any) {
             logger(error);
             throw new Error(error);
+        } finally {
+            //transporter.close();
         }
     }
 
@@ -24,7 +47,7 @@ class EmailNotifier implements emailRepository {
             const templates = new emailTemplates();
             const rendered = await templates.render(template, data);
             return rendered;
-        } catch (error) {
+        } catch (error: any) {
             logger(error);
             throw new Error(error);
         }
