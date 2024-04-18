@@ -22,7 +22,6 @@ jobs:
         EMAIL_USER=${{ secrets.EMAIL_USER }}
         KEY_AES=${{ secrets.KEY_AES }}
         KEY_SHA1=${{ secrets.KEY_SHA1 }}
-        AWS_DEFAULT_REGION=${{ vars.AWS_DEFAULT_REGION }}
         EMAIL_HOST=${{ vars.EMAIL_HOST }}
         EMAIL_PORT=${{ vars.EMAIL_PORT }}
         HOST_FRONT=${{ vars.HOST_FRONT }}
