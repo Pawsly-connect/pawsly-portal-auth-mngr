@@ -1,4 +1,3 @@
-import User from "../entities/User";
 import UserRepository from "../repositories/user.repository";
 import crypto from 'crypto-js';
 import debug from "debug";
