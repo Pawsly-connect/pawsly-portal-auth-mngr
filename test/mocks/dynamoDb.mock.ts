@@ -26,7 +26,8 @@ const userReadedSuccess: any = {
             password: '592183b27945b115662e5a3c052d2c44a0afd65d',
             stateAccount: true,
             city: 'Bogota',
-            email: 'test@mail.com'
+            email: 'test@mail.com',
+            dateLastUpdate: ''
         }
     ],
     ScannedCount: 1
@@ -49,7 +50,8 @@ const userReadedNotVerified: any = {
             password: '592183b27945b115662e5a3c052d2c44a0afd65d',
             stateAccount: false,
             city: 'Bogota',
-            email: 'test@mail.com'
+            email: 'test@mail.com',
+            dateLastUpdate: ''
         }
     ],
     ScannedCount: 1
@@ -69,9 +71,21 @@ const userReadedNotExist: any = {
     ScannedCount: 0
 }
 
+const userUpdatedSuccess: any = {
+    '$metadata': {
+        httpStatusCode: 200,
+        requestId: '3017f9f7-7ae0-48b1-a6ae-72f435297c1b',
+        extendedRequestId: undefined,
+        cfId: undefined,
+        attempts: 1,
+        totalRetryDelay: 0
+    }
+}
+
 export default {
     userCreatedSuccess: userCreatedSuccess,
     userReadedSuccess: userReadedSuccess,
     userReadedNotExist: userReadedNotExist,
-    userReadedNotVerified: userReadedNotVerified
+    userReadedNotVerified: userReadedNotVerified,
+    userUpdatedSuccess: userUpdatedSuccess
 }

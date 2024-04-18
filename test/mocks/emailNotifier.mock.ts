@@ -1,4 +1,17 @@
-const sendEmailSuccess: any = { id: '89409fdd-c9a1-402a-bb6d-76ad885dedac' }
+const sendEmailSuccess: any = {
+  accepted: [ 'user@test.com' ],
+  rejected: [],
+  ehlo: [ 'PIPELINING', '8BITMIME', 'SMTPUTF8', 'AUTH LOGIN PLAIN' ],
+  envelopeTime: 652,
+  messageTime: 452,
+  messageSize: 19252,
+  response: '250 Accepted [STATUS=new MSGID=Zh8MHx4jA5Gy3PUrZh8UN6ytuXFU34hsAAAABKXpYqRlpTROSE80mIeRVtQ]',
+  envelope: {
+    from: 'pawsly.connect@gmail.com',
+    to: [ 'user@test.com' ]
+  },
+  messageId: '<bf1a98aa-d243-77d7-8b99-c3fb79e73407@gmail.com>'
+}
 
 const renderSuccess: any = {
     html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\

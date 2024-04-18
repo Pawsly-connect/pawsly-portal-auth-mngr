@@ -9,8 +9,8 @@
     "build": "npm run lint:fix && tsc",
     "start:local": "cross-env NODE_ENV=local DEBUG=paw:* DEBUG_COLORS=false nodemon .",
     "start": "cross-env DEBUG=paw:* node .",
-    "test": "cross-env NODE_ENV=local mocha --timeout 10000 --require ts-node/register 'test/**/*.spec.ts' --exit",
-    "test:coverage": "cross-env NODE_ENV=local nyc --reporter=lcov mocha --require ts-node/register 'test/**/*.spec.ts' --exit"
+    "test": "cross-env NODE_ENV=local KEY_SHA1=keyTest KEY_AES=keyTest mocha --timeout 10000 --require ts-node/register 'test/**/*.spec.ts' --exit",
+    "test:coverage": "cross-env NODE_ENV=local KEY_SHA1=keyTest KEY_AES=keyTest nyc --reporter=lcov mocha --require ts-node/register 'test/**/*.spec.ts' --exit"
   },
   "repository": {
     "type": "git",

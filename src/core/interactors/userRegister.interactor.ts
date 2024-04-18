@@ -11,14 +11,16 @@ const userRegister = (userRepository: UserRepository, emailRepository: EmailRepo
     try {
         user.stateAccount = false;
         user.dateRegister = new Date().toISOString();
+        user.dateLastUpdate = "";
+        user.IsOwnerBussines = false;
         user.password = crypto.HmacSHA1(user.password, process.env.KEY_SHA1 as string).toString();
         const users = await userRepository.read(user.email);
         if (users.ScannedCount === 0) {
             await userRepository.create(user);
             const template = path.join(__dirname, '../../..', 'statics/verificationTemplate.html');
             const dataTemplate = {
-                nombre: user.name,
-                email: Buffer.from(user.email).toString('base64'),
+                name: user.name,
+                key: crypto.AES.encrypt(user.email, process.env.KEY_AES as string).toString(),
                 base_url: process.env.HOST_FRONT
             };
             const rendered = await emailRepository.renderTemplate(template, dataTemplate);
@@ -42,7 +44,7 @@ const userRegister = (userRepository: UserRepository, emailRepository: EmailRepo
     } catch (error: any) {
         logger(error.message);
         return {
-            body: { code: 3001, msg: error.message },
+            body: { code: 3001, msg: "Error tecnico" },
             statusCode: 500
         };
     }
