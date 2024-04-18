@@ -6,13 +6,24 @@ on:
       - staging
 
 jobs:
-    deploy-stg:
-        uses: Pawsly-connect/pawsly-pipeline/.github/workflows/deploy_backend.yml@feature/add_pipeline
-        with:
-            environment: st
-            node-version: 20.x
-            build-command: npm run build
-            function-name: lbda-stg-portal-auth-mngr
-            files-to-compress: "build node_modules statics"
-            environment-variables: "{KeyName1=string,KeyName2=string}"
-        secrets: inherit
+  deploy-stg:
+    uses: Pawsly-connect/pawsly-pipeline/.github/workflows/deploy_backend.yml@feature/add_pipeline
+    with:
+      environment: st
+      node-version: 20.x
+      build-command: npm run build
+      function-name: lbda-stg-portal-auth-mngr
+      files-to-compress: "build node_modules statics"
+    secrets:
+      AWS_ROLE_DEPLOY_BACKEND: ${{ vars.AWS_ROLE_DEPLOY_BACKEND }}
+      ENV_VARS: >
+        DYNAMO_ENDPOINT=${{ secrets.DYNAMO_ENDPOINT }}
+        EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}
+        EMAIL_USER=${{ secrets.EMAIL_USER }}
+        KEY_AES=${{ secrets.KEY_AES }}
+        KEY_SHA1=${{ secrets.KEY_SHA1 }}
+        AWS_DEFAULT_REGION=${{ vars.AWS_DEFAULT_REGION }}
+        EMAIL_HOST=${{ vars.EMAIL_HOST }}
+        EMAIL_PORT=${{ vars.EMAIL_PORT }}
+        HOST_FRONT=${{ vars.HOST_FRONT }}
+        NODE_ENV=${{ vars.NODE_ENV }}

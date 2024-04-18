@@ -11,4 +11,5 @@ jobs:
     uses: Pawsly-connect/pawsly-pipeline/.github/workflows/requirements_backend.yml@feature/add_pipeline
     with:
       project-key: 'Pawsly-connect_pawsly-portal-auth-mngr'
+      command-test: 'npm run test:coverage'
     secrets: inherit
