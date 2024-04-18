@@ -15,7 +15,7 @@ jobs:
       function-name: lbda-stg-portal-auth-mngr
       files-to-compress: "build node_modules statics"
     secrets:
-      AWS_ROLE_DEPLOY_BACKEND: ${{ vars.AWS_ROLE_DEPLOY_BACKEND }}
+      AWS_ROLE_DEPLOY_BACKEND: ${{ secrets.AWS_ROLE_DEPLOY_BACKEND }}
       ENV_VARS: >
         DYNAMO_ENDPOINT=${{ secrets.DYNAMO_ENDPOINT }}
         EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}
