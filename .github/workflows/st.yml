@@ -22,7 +22,8 @@ jobs:
         EMAIL_USER=${{ secrets.EMAIL_USER }}
         KEY_AES=${{ secrets.KEY_AES }}
         KEY_SHA1=${{ secrets.KEY_SHA1 }}
-        EMAIL_HOST=${{ vars.EMAIL_HOST }}
-        EMAIL_PORT=${{ vars.EMAIL_PORT }}
-        HOST_FRONT=${{ vars.HOST_FRONT }}
-        NODE_ENV=${{ vars.NODE_ENV }}
+        AWS_REGION=${{ secrets.AWS_REGION }}
+        EMAIL_HOST=${{ secrets.EMAIL_HOST }}
+        EMAIL_PORT=${{ secrets.EMAIL_PORT }}
+        HOST_FRONT=${{ secrets.HOST_FRONT }}
+        NODE_ENV=${{ secrets.NODE_ENV }}
