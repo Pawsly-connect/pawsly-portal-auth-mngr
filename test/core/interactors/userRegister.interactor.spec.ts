@@ -28,9 +28,10 @@ describe("user register interactor", () => {
         "city": "Marte",
         "stateAccount": true,
         "dateRegister": new Date().toISOString(),
-        "IsOwnerBussines": false
+        "IsOwnerBussines": false,
+        "dateLastUpdate": ""
     };
-    it('userRegister [1001]', async () => {
+    it('userRegister [1001] (Registro exitoso)', async () => {
         stubUserDynamoRead.returns(mocksDb.userReadedNotExist);
         stubUserDynamoCreate.returns(mocksDb.userCreatedSuccess);
         stubRenderTemplate.returns(mocksEmail.renderSuccess);
@@ -40,11 +41,17 @@ describe("user register interactor", () => {
         expect(res?.body.msg).to.equal('Usuario guardado correctamente');
         expect(res?.statusCode).to.equal(201);
     });
-    it('userRegister [2001]', async () => {
+    it('userRegister [2001] (Usuario ya existe)', async () => {
         stubUserDynamoRead.returns(mocksDb.userReadedSuccess);
         const res = await userRegister(userRepository, emailRepository)(user);
         expect(res?.body.code).to.equal(2001);
         expect(res?.body.msg).to.equal('El usuario ya existe');
         expect(res?.statusCode).to.equal(400);
+    });
+    it('userRegister [3001] (Error tecnico)', async () => {
+        stubUserDynamoRead.rejects();
+        const res = await userRegister(userRepository, emailRepository)(user);
+        expect(res?.body.code).to.equal(3001);
+        expect(res?.statusCode).to.equal(500);
     });
 });

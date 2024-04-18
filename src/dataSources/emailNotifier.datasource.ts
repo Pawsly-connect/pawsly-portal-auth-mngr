@@ -9,36 +9,32 @@ import emailTemplates from 'swig-email-templates';
 
 const logger = debug("paw:emailNotifier.datasource");
 
-const conectionEmailSettings: any = {
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    requireTLS: false,
-    secured: true,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD
-    }
-};
-
 class EmailNotifier implements emailRepository {
 
-    private getTransport(){
-        const transport = createTransport(conectionEmailSettings);
-        transport.verify();
-        return transport;
-    }
+    private transporter!: Transporter;
 
     public async sendEmail(payload: SendMailOptions): Promise<any> {
         try {
-            const transporter = this.getTransport();
-            const infoSend = await transporter.sendMail(payload);
-            logger(infoSend);
-            return infoSend;
+            const smtpConectionSettings: any = {
+                host: process.env.EMAIL_HOST,
+                port: process.env.EMAIL_PORT,
+                requireTLS: true,
+                secured: true,
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASSWORD
+                }
+            };
+            this.transporter = createTransport(smtpConectionSettings);
+            this.transporter.verify((err: any, _success: any) => {
+                if(err){throw new Error(err)}
+            });
+            return await this.transporter.sendMail(payload);
         } catch (error: any) {
             logger(error);
             throw new Error(error);
         } finally {
-            // transporter.close();
+            this.transporter.close();
         }
     }
 

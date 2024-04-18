@@ -8,17 +8,20 @@ const logger = debug("paw:userDynamo.datasource");
 
 class UserDynamo implements userRepository {
 
+    private dynamoClient!: DynamoDBClient;
+    private docClient!: DynamoDBDocumentClient;
+
     private client(){
-        const dynamoClient = new DynamoDBClient({
+        this.dynamoClient = new DynamoDBClient({
             endpoint: process.env.DYNAMO_ENDPOINT,
             region: process.env.AWS_DEFAULT_REGION
         });
-        return DynamoDBDocumentClient.from(dynamoClient);
+        return DynamoDBDocumentClient.from(this.dynamoClient);
     }
 
     public async read(email: string): Promise<any> {
         try {
-            const docClient = this.client();
+            this.docClient = this.client();
             const params = {
                 TableName: "users",
                 KeyConditionExpression: "#email = :email",
@@ -27,7 +30,7 @@ class UserDynamo implements userRepository {
                 },
                 ExpressionAttributeValues: { ":email": email }
             };
-            const data: any = await docClient.send(new QueryCommand(params));
+            const data: any = await this.docClient.send(new QueryCommand(params));
             if (data.$metadata.httpStatusCode >= 400) {
                 logger(data.toString());
                 throw new Error(data.toString());
@@ -37,18 +40,19 @@ class UserDynamo implements userRepository {
             logger(error);
             throw new Error(error);
         } finally {
-            // this.clientDynamoDB.destroy();
+            this.dynamoClient.destroy();
+            this.docClient.destroy();
         }
     }
 
     public async create(user: User): Promise<any> {
         try {
-            const docClient = this.client();
+            this.docClient = this.client();
             const params = {
                 TableName: "users",
                 Item: user,
             };
-            const data: any = await docClient.send(new PutCommand(params));
+            const data: any = await this.docClient.send(new PutCommand(params));
             if (data.$metadata.httpStatusCode >= 400) {
                 logger(data.toString());
                 throw new Error(data.toString());
@@ -58,24 +62,26 @@ class UserDynamo implements userRepository {
             logger(error);
             throw new Error(error);
         } finally {
-            // this.clientDynamoDB.destroy();
+            this.dynamoClient.destroy();
+            this.docClient.destroy();
         }
     }
 
     public async update(email: string): Promise<any> {
         try {
-            const docClient = this.client();
+            this.docClient = this.client();
             const params = {
                 TableName: "users",
                 Key: {
-                    'email': email,
+                    'email': email
                 },
-                UpdateExpression: "set stateAccount = :stateAccount",
+                UpdateExpression: "SET stateAccount = :stateAccount, dateLastUpdate = :dateLastUpdate",
                 ExpressionAttributeValues: {
                     ":stateAccount": true,
+                    ":dateLastUpdate": new Date().toISOString()
                 }
             };
-            const data: any = await docClient.send(new UpdateCommand(params));
+            const data: any = await this.docClient.send(new UpdateCommand(params));
             if (data.$metadata.httpStatusCode >= 400) {
                 logger(data.toString());
                 throw new Error(data.toString());
@@ -85,20 +91,21 @@ class UserDynamo implements userRepository {
             logger(error);
             throw new Error(error);
         } finally {
-            // this.clientDynamoDB.destroy();
+            this.dynamoClient.destroy();
+            this.docClient.destroy();
         }
     }
 
     public async delete(email: string): Promise<any> {
         try {
-            const docClient = this.client();
+            this.docClient = this.client();
             const params = {
                 TableName: "users",
                 Key: {
-                    'email': email,
+                    'email': email
                 }
             };
-            const data: any = await docClient.send(new DeleteCommand(params));
+            const data: any = await this.docClient.send(new DeleteCommand(params));
             if (data.$metadata.httpStatusCode >= 400) {
                 logger(data.toString());
                 throw new Error(data.toString());
@@ -108,7 +115,8 @@ class UserDynamo implements userRepository {
             logger(error);
             throw new Error(error);
         } finally {
-            // this.clientDynamoDB.destroy();
+            this.dynamoClient.destroy();
+            this.docClient.destroy();
         }
     }
 }

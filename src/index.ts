@@ -4,6 +4,7 @@ import dotEnv from 'dotenv';
 import cors from 'cors';
 import registerController from './controllers/registerHttp.controller';
 import loginController from './controllers/loginHttp.controller';
+import verificationController from './controllers/verificationHttp.controller';
 import debug from "debug";
 
 dotEnv.config();
@@ -19,6 +20,7 @@ app.use(cors({
 
 app.post('/user/register', registerController);
 app.post('/user/login', loginController);
+app.post('/user/verification', verificationController);
 
 app.use((req, res) => {
 	return res.status(404).json({
