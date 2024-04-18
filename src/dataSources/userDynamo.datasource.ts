@@ -14,7 +14,7 @@ class UserDynamo implements userRepository {
     private client(){
         this.dynamoClient = new DynamoDBClient({
             endpoint: process.env.DYNAMO_ENDPOINT,
-            region: process.env.AWS_DEFAULT_REGION
+            region: process.env.AWS_REGION
         });
         return DynamoDBDocumentClient.from(this.dynamoClient);
     }
