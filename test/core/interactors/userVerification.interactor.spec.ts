@@ -44,6 +44,7 @@ describe("user verification interactor", () => {
         stubUserDynamoRead.rejects();
         const res = await userVerification(userRepository)(body);
         expect(res?.body.code).to.equal(3003);
+        expect(res?.body.msg).to.equal('Error tecnico');
         expect(res?.statusCode).to.equal(500);
     });
 });

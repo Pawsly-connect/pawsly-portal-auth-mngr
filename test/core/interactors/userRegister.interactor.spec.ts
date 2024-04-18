@@ -52,6 +52,7 @@ describe("user register interactor", () => {
         stubUserDynamoRead.rejects();
         const res = await userRegister(userRepository, emailRepository)(user);
         expect(res?.body.code).to.equal(3001);
+        expect(res?.body.msg).to.equal('Error tecnico');
         expect(res?.statusCode).to.equal(500);
     });
 });
