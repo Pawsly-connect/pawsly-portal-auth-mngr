@@ -27,7 +27,10 @@ class EmailNotifier implements emailRepository {
             };
             this.transporter = createTransport(smtpConectionSettings);
             this.transporter.verify((err: any, _success: any) => {
-                if(err){throw new Error(err)}
+                if(err){
+                    logger(err);
+                    throw new Error(err)
+                }
             });
             return await this.transporter.sendMail(payload);
         } catch (error: any) {
@@ -41,8 +44,7 @@ class EmailNotifier implements emailRepository {
     public async renderTemplate(template: string, data: object): Promise<any> {
         try {
             const templates = new emailTemplates();
-            const rendered = await templates.render(template, data);
-            return rendered;
+            return await templates.render(template, data);
         } catch (error: any) {
             logger(error);
             throw new Error(error);

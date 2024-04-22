@@ -19,7 +19,7 @@ describe("Register controller", () => {
             statusCode: 201
         }
         stubUserRegisterInteractor.returns(response);
-        request(app).post('/user/register').send({
+        request(app).post('/V1/user/register').send({
             "email": "test@mail.com",
             "password": "123abc.",
             "city": "Bogota",

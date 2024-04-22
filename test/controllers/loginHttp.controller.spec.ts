@@ -19,7 +19,7 @@ describe("login controller", () => {
             statusCode: 200
         }
         stubUserLoginInteractor.returns(response);
-        request(app).post('/user/login').send({
+        request(app).post('/V1/user/login').send({
             "email": "test@mail.com",
             "password": "123abc."
         }).expect(200).end((err, res) => {
