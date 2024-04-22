@@ -11,7 +11,7 @@
       "description": "Ambiente ST",
       "variables": {
         "st-domain": {
-          "default": "api.pawsly.com/auth-management"
+          "default": "1vd78290pl.execute-api.us-east-1.amazonaws.com"
         }
       }
     },
@@ -20,7 +20,7 @@
       "description": "Ambiente PROD",
       "variables": {
         "prod-domain": {
-          "default": "api.pawsly.com/auth-management"
+          "default": "1vd78290pl.execute-api.us-east-1.amazonaws.com"
         }
       }
     }
