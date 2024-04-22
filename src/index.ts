@@ -18,9 +18,9 @@ app.use(cors({
 	credentials: true
 }));
 
-app.post('/user/register', registerController);
-app.post('/user/login', loginController);
-app.post('/user/verification', verificationController);
+app.post('/V1/user/register', registerController);
+app.post('/V1/user/login', loginController);
+app.post('/V1/user/verification', verificationController);
 
 app.use((req, res) => {
 	return res.status(404).json({

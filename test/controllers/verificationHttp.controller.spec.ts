@@ -19,7 +19,7 @@ describe("Verification controller", () => {
             statusCode: 200
         }
         stubUserVerificationInteractor.returns(response);
-        request(app).post('/user/verification').send({
+        request(app).post('/V1/user/verification').send({
             "key": "U2FsdGVkX18oNEnyVISxHChyfJABnlZ6q7nzjwCXzIw"
         }).expect(200).end((err, res) => {
             expect(err).to.be.null;
