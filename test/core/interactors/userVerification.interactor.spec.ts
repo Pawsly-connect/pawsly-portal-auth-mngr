@@ -16,7 +16,7 @@ describe("user verification interactor", () => {
     const stubUserDynamoRead = sandbox.stub(userRepository, "read");
     const stubUserDynamoUpdate = sandbox.stub(userRepository, "update");
     let body: any = {
-        "key": "U2FsdGVkX18oNEnyVISxHChyfJABnlZ6q7nzjwCXzIw"
+        "key": "NjM4MTkxMzZkYTE5NWU5YTI5MGJkYTY5NmVhNzAxNjU="
     };
     it('userVerification [1003] (Verificacion exitosa)', async () => {
         stubUserDynamoRead.returns(mocksDb.userReadedNotVerified);
