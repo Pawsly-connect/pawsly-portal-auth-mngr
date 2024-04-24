@@ -1,12 +1,12 @@
 import UserRepository from "../repositories/user.repository";
-import crypto from 'crypto-js';
+import { decryptData } from '../../utilities/cipher';
 import debug from "debug";
 
 const logger = debug("paw:userVerification.interactor");
 
 const userVerification = (userRepository: UserRepository) => async (body: any) => {
     try {
-        const email = crypto.AES.decrypt(body.key, process.env.KEY_AES as string).toString(crypto.enc.Utf8);
+        const email = decryptData(body.key);
         const users = await userRepository.read(email);
         if (users.ScannedCount === 1) {
             const dataUser = users.Items[0];

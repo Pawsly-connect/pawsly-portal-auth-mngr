@@ -1,6 +1,5 @@
 import User from "../entities/User";
 import UserRepository from "../repositories/user.repository";
-import crypto from 'crypto-js';
 import debug from "debug";
 
 const logger = debug("paw:userLogin.interactor");
@@ -10,8 +9,7 @@ const userLogin = (userRepository: UserRepository) => async (user: User) => {
         const users = await userRepository.read(user.email);
         if (users.ScannedCount === 1) {
             const dataUser = users.Items[0];
-            const passwordHASH = crypto.HmacSHA1(user.password, process.env.KEY_SHA1 as string).toString(crypto.enc.Hex);
-            if(passwordHASH === dataUser.password){
+            if(user.password === dataUser.password){
                 if(dataUser.stateAccount){
                     return {
                         body: { code: 1002, msg: `El usuario ha ingresado correctamente` },

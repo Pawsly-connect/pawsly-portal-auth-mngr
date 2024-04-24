@@ -22,8 +22,8 @@ describe("user register interactor", () => {
     const stubEmailNotifier = sandbox.stub(emailRepository, "sendEmail");
     const stubRenderTemplate = sandbox.stub(emailRepository, "renderTemplate");
     const user: User = {
-        "email": "prueba@test.com",
-        "password": "123abc.",
+        "email": "test@mail.com",
+        "password": "123abc.ABC",
         "name": "unit testing",
         "city": "Marte",
         "stateAccount": true,

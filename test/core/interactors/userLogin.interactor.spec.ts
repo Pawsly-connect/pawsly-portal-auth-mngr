@@ -16,8 +16,8 @@ describe("user login interactor", () => {
     const userRepository = new UserDynamo();
     const stubUserDynamoRead = sandbox.stub(userRepository, "read");
     let user: User = {
-        "email": "prueba@test.com",
-        "password": "1234",
+        "email": "test@mail.com",
+        "password": "123abc.ABC",
         "name": "unit testing",
         "city": "Marte",
         "stateAccount": true,

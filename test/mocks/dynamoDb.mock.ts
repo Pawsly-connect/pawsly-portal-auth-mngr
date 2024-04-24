@@ -23,7 +23,7 @@ const userReadedSuccess: any = {
         {
             name: 'User Tester',
             dateRegister: '2024-04-08T03:15:02.361Z',
-            password: '592183b27945b115662e5a3c052d2c44a0afd65d',
+            password: '123abc.ABC',
             stateAccount: true,
             city: 'Bogota',
             email: 'test@mail.com',
@@ -47,7 +47,7 @@ const userReadedNotVerified: any = {
         {
             name: 'User Tester',
             dateRegister: '2024-04-08T03:15:02.361Z',
-            password: '592183b27945b115662e5a3c052d2c44a0afd65d',
+            password: '123abc.ABC',
             stateAccount: false,
             city: 'Bogota',
             email: 'test@mail.com',

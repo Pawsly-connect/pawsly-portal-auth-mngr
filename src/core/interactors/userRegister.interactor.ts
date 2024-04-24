@@ -1,9 +1,9 @@
 import User from "../entities/User";
 import EmailRepository from "../repositories/email.repository";
 import UserRepository from "../repositories/user.repository";
-import crypto from 'crypto-js';
 import * as path from 'path';
 import debug from "debug";
+import { encryptData } from '../../utilities/cipher';
 
 const logger = debug("paw:userRegister.interactor");
 
@@ -13,14 +13,13 @@ const userRegister = (userRepository: UserRepository, emailRepository: EmailRepo
         user.dateRegister = new Date().toISOString();
         user.dateLastUpdate = "";
         user.IsOwnerBussines = false;
-        user.password = crypto.HmacSHA1(user.password, process.env.KEY_SHA1 as string).toString();
         const users = await userRepository.read(user.email);
         if (users.ScannedCount === 0) {
             await userRepository.create(user);
             const template = path.join(__dirname, '../../..', 'statics/verificationTemplate.html');
             const dataTemplate = {
                 name: user.name,
-                key: crypto.AES.encrypt(user.email, process.env.KEY_AES as string).toString(),
+                key: encryptData(user.email),
                 base_url: process.env.HOST_FRONT
             };
             const rendered = await emailRepository.renderTemplate(template, dataTemplate);
