@@ -1,18 +1,22 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 import dotEnv from 'dotenv';
 import cors from 'cors';
 import registerController from './controllers/registerHttp.controller';
 import loginController from './controllers/loginHttp.controller';
 import verificationController from './controllers/verificationHttp.controller';
-import debug from "debug";
+import logger from "morgan";
 
 dotEnv.config();
-const logger = debug("paw:index");
 
 const app = express();
-app.use(bodyParser.json());
+app.disable('x-powered-by');
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(
+	logger('dev', {
+		skip: (rq) => rq.url === 'health'
+	})
+);
 app.use(cors({
 	origin: process.env.HOST_FRONT,
 	credentials: true

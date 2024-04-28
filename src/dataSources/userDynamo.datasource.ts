@@ -13,7 +13,6 @@ class UserDynamo implements userRepository {
 
     private client(){
         this.dynamoClient = new DynamoDBClient({
-            endpoint: process.env.DYNAMO_ENDPOINT,
             region: process.env.REGION_AWS_LAMBDA
         });
         return DynamoDBDocumentClient.from(this.dynamoClient);
@@ -32,12 +31,12 @@ class UserDynamo implements userRepository {
             };
             const data: any = await this.docClient.send(new QueryCommand(params));
             if (data.$metadata.httpStatusCode >= 400) {
-                logger(data.toString());
+                logger("[Error] %j", data.toString());
                 throw new Error(data.toString());
             }
             return data;
         } catch (error: any) {
-            logger(error);
+            logger("[Error] %j", error);
             throw new Error(error);
         } finally {
             this.dynamoClient.destroy();
@@ -54,12 +53,12 @@ class UserDynamo implements userRepository {
             };
             const data: any = await this.docClient.send(new PutCommand(params));
             if (data.$metadata.httpStatusCode >= 400) {
-                logger(data.toString());
+                logger("[Error] %j", data.toString());
                 throw new Error(data.toString());
             }
             return data;
         } catch (error: any) {
-            logger(error);
+            logger("[Error] %j", error);
             throw new Error(error);
         } finally {
             this.dynamoClient.destroy();
@@ -88,7 +87,7 @@ class UserDynamo implements userRepository {
             }
             return data;
         } catch (error: any) {
-            logger(error);
+            logger("[Error] %j", error);
             throw new Error(error);
         } finally {
             this.dynamoClient.destroy();
@@ -112,7 +111,7 @@ class UserDynamo implements userRepository {
             }
             return data;
         } catch (error: any) {
-            logger(error);
+            logger("[Error] %j", error);
             throw new Error(error);
         } finally {
             this.dynamoClient.destroy();
