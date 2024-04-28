@@ -8,15 +8,7 @@ const logger = debug("paw:server");
 
 if (isInLambda) {
     const serverless = serverlessExpress.createServer(app);
-    let eventLog = "";
-    const handlerExport = (event: any, context: any) => {
-        eventLog = event;
-        console.log(event);
-        serverlessExpress.proxy(serverless, event, context);
-    }
-    console.log(eventLog);
-    logger(eventLog);
-    exports.handler = handlerExport;
+    exports.handler = (event: any, context: any) => serverlessExpress.proxy(serverless, event, context);
 }else if(process.env.NODE_ENV === 'local'){
     const server = http.createServer(app);
     const port: any = process.env.PORT || 3000;
