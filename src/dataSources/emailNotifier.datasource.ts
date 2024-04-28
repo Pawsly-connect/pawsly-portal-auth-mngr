@@ -34,7 +34,7 @@ class EmailNotifier implements emailRepository {
             });
             return await this.transporter.sendMail(payload);
         } catch (error: any) {
-            logger("[Error] %j", error);
+            logger("[Error] %j", error.message);
             throw new Error(error);
         } finally {
             this.transporter.close();
@@ -46,7 +46,7 @@ class EmailNotifier implements emailRepository {
             const templates = new emailTemplates();
             return await templates.render(template, data);
         } catch (error: any) {
-            logger("[Error] %j", error);
+            logger("[Error] %j", error.message);
             throw new Error(error);
         }
     }

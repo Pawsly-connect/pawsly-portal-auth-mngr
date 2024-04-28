@@ -41,7 +41,7 @@ const userRegister = (userRepository: UserRepository, emailRepository: EmailRepo
             };
         }
     } catch (error: any) {
-        logger("[Error] %j", error);
+        logger("[Error] %j", error.message);
         return {
             body: { code: 3001, msg: "Error tecnico" },
             statusCode: 500

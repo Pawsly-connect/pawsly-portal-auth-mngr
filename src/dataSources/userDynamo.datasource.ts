@@ -82,12 +82,12 @@ class UserDynamo implements userRepository {
             };
             const data: any = await this.docClient.send(new UpdateCommand(params));
             if (data.$metadata.httpStatusCode >= 400) {
-                logger(data.toString());
+                logger("[Error] %j", data.toString());
                 throw new Error(data.toString());
             }
             return data;
         } catch (error: any) {
-            logger("[Error] %j", error);
+            logger("[Error] %j", error.message);
             throw new Error(error);
         } finally {
             this.dynamoClient.destroy();
@@ -106,12 +106,12 @@ class UserDynamo implements userRepository {
             };
             const data: any = await this.docClient.send(new DeleteCommand(params));
             if (data.$metadata.httpStatusCode >= 400) {
-                logger(data.toString());
+                logger("[Error] %j", data.toString());
                 throw new Error(data.toString());
             }
             return data;
         } catch (error: any) {
-            logger("[Error] %j", error);
+            logger("[Error] %j", error.message);
             throw new Error(error);
         } finally {
             this.dynamoClient.destroy();
