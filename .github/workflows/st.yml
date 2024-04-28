@@ -27,3 +27,4 @@ jobs:
         EMAIL_PORT=${{ secrets.EMAIL_PORT }}
         HOST_FRONT=${{ secrets.HOST_FRONT }}
         NODE_ENV=${{ secrets.NODE_ENV }}
+        DEBUG=paw:*
