@@ -50,10 +50,7 @@ export async function decryptRequest(cipherText: string) {
 }
 
 function importPrivateKey(pem: string) {
-    const pemHeader = "-----BEGIN PRIVATE KEY-----";
-    const pemFooter = "-----END PRIVATE KEY-----";
-    const pemContents = pem.substring(pemHeader.length, pem.length - pemFooter.length);
-    const binaryDerString = atob(pemContents);
+    const binaryDerString = atob(pem);
     const binaryDer = str2ab(binaryDerString);
     return crypto.subtle.importKey(
         "pkcs8",
