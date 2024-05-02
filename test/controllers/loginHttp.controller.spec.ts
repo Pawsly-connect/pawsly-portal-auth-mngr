@@ -22,7 +22,7 @@ describe("login controller", () => {
             statusCode: 200
         }
         stubUserLoginInteractor.returns(response);
-        request(app).post('/V1/user/login').send(mocksRequest.login).expect(200).end((err, res) => {
+        request(app).post('/V1/user/login').set({ "content-type": "text/plain" }).send(mocksRequest.login).expect(200).end((err, res) => {
             expect(err).to.be.null;
             expect(res.body.code).to.equal(1002);
             expect(res.body.msg).to.equal('El usuario ha ingresado correctamente');
