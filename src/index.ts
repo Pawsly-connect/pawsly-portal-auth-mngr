@@ -4,18 +4,19 @@ import cors from 'cors';
 import registerController from './controllers/registerHttp.controller';
 import loginController from './controllers/loginHttp.controller';
 import verificationController from './controllers/verificationHttp.controller';
-import logger from "morgan";
+import morgan from "morgan";
+import debug from "debug";
 import { decryptRequest } from './utilities/cipher';
 
 dotEnv.config();
-
+const logger = debug("paw:index");
 const app = express();
 app.disable('x-powered-by');
 app.use(express.json());
 app.use(express.text());
 app.use(express.urlencoded({ extended: false }));
 app.use(
-	logger('dev', {
+	morgan('dev', {
 		skip: (rq) => rq.url === 'health'
 	})
 );
@@ -29,7 +30,7 @@ const desalting = async (req: any, res: any, next: () => void) => {
 		req.body = JSON.parse(await decryptRequest(req.body));
 		next();
 	} catch (error: any) {
-		console.error(error)
+		logger("[Error] %j", error.message);
 		return res.status(500).json({
 			code: 3005,
 			msg: `Error obtaining valid request`
