@@ -38,8 +38,8 @@ export function decryptData(encryptedData: WithImplicitCoercion<string> | { [Sym
 export async function decryptRequest(cipherText: string) {
     const keyPem = await importPrivateKey(key);
     const array: any = atob(cipherText).split(',');
-    let message = new Uint8Array(array as ArrayBuffer);
-    let decrypted = await crypto.subtle.decrypt(
+    const message = new Uint8Array(array as ArrayBuffer);
+    const decrypted = await crypto.subtle.decrypt(
         {
             name: encryptionMethod
         },
