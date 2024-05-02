@@ -3,7 +3,10 @@ import sinon from 'sinon';
 import request from 'supertest';
 import interactor from '../../src/core/interactors';
 import app from '../../src/index';
+import mocksRequest from '../mocks/requests.mock';
+import dotEnv from 'dotenv';
 
+dotEnv.config();
 const expect = chai.expect;
 const sandbox = sinon.createSandbox();
 
@@ -19,9 +22,7 @@ describe("Verification controller", () => {
             statusCode: 200
         }
         stubUserVerificationInteractor.returns(response);
-        request(app).post('/V1/user/verification').send({
-            "key": "U2FsdGVkX18oNEnyVISxHChyfJABnlZ6q7nzjwCXzIw"
-        }).expect(200).end((err, res) => {
+        request(app).post('/V1/user/verification').send(mocksRequest.verification).expect(200).end((err, res) => {
             expect(err).to.be.null;
             expect(res.body.code).to.equal(response.body.code);
             expect(res.body.msg).to.equal(response.body.msg);

@@ -3,7 +3,10 @@ import sinon from 'sinon';
 import request from 'supertest';
 import interactor from '../../src/core/interactors';
 import app from '../../src/index';
+import mocksRequest from '../mocks/requests.mock';
+import dotEnv from 'dotenv';
 
+dotEnv.config();
 const expect = chai.expect;
 const sandbox = sinon.createSandbox();
 
@@ -19,12 +22,7 @@ describe("Register controller", () => {
             statusCode: 201
         }
         stubUserRegisterInteractor.returns(response);
-        request(app).post('/V1/user/register').send({
-            "email": "test@mail.com",
-            "password": "123abc.",
-            "city": "Bogota",
-            "name": "User Tester"
-        }).expect(201).end((err, res) => {
+        request(app).post('/V1/user/register').send(mocksRequest.register).expect(201).end((err, res) => {
             expect(err).to.be.null;
             expect(res.body.code).to.equal(response.body.code);
             expect(res.body.msg).to.equal(response.body.msg);

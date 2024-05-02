@@ -3,7 +3,10 @@ import sinon from 'sinon';
 import request from 'supertest';
 import interactor from '../../src/core/interactors';
 import app from '../../src/index';
+import mocksRequest from '../mocks/requests.mock';
+import dotEnv from 'dotenv';
 
+dotEnv.config();
 const expect = chai.expect;
 const sandbox = sinon.createSandbox();
 
@@ -19,10 +22,7 @@ describe("login controller", () => {
             statusCode: 200
         }
         stubUserLoginInteractor.returns(response);
-        request(app).post('/V1/user/login').send({
-            "email": "test@mail.com",
-            "password": "123abc."
-        }).expect(200).end((err, res) => {
+        request(app).post('/V1/user/login').send(mocksRequest.login).expect(200).end((err, res) => {
             expect(err).to.be.null;
             expect(res.body.code).to.equal(1002);
             expect(res.body.msg).to.equal('El usuario ha ingresado correctamente');
