@@ -22,7 +22,7 @@ jobs:
         EMAIL_USER=${{ secrets.EMAIL_USER }}
         KEY_AES=${{ secrets.KEY_AES }}
         KEY_IV=${{ secrets.KEY_IV }}
-        KEY_CIPHER=${{ secrets.KEY_CIPHER }}
+        KEY_CIPHER=null
         REGION_AWS_LAMBDA=${{ secrets.REGION_AWS_LAMBDA }}
         EMAIL_HOST=${{ secrets.EMAIL_HOST }}
         EMAIL_PORT=${{ secrets.EMAIL_PORT }}
