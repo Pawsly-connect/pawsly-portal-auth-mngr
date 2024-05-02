@@ -22,7 +22,7 @@ describe("Register controller", () => {
             statusCode: 201
         }
         stubUserRegisterInteractor.returns(response);
-        request(app).post('/V1/user/register').send(mocksRequest.register).expect(201).end((err, res) => {
+        request(app).post('/V1/user/register').set({ "content-type": "text/plain" }).send(mocksRequest.register).expect(201).end((err, res) => {
             expect(err).to.be.null;
             expect(res.body.code).to.equal(response.body.code);
             expect(res.body.msg).to.equal(response.body.msg);

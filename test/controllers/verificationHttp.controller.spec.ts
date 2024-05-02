@@ -22,7 +22,7 @@ describe("Verification controller", () => {
             statusCode: 200
         }
         stubUserVerificationInteractor.returns(response);
-        request(app).post('/V1/user/verification').send(mocksRequest.verification).expect(200).end((err, res) => {
+        request(app).post('/V1/user/verification').set({ "content-type": "text/plain" }).send(mocksRequest.verification).expect(200).end((err, res) => {
             expect(err).to.be.null;
             expect(res.body.code).to.equal(response.body.code);
             expect(res.body.msg).to.equal(response.body.msg);
