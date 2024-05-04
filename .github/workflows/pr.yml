@@ -17,7 +17,6 @@ jobs:
         secrets:
             AWS_ROLE_DEPLOY_BACKEND: ${{ secrets.AWS_ROLE_DEPLOY_BACKEND }}
             ENV_VARS: >
-              DYNAMO_ENDPOINT=${{ secrets.DYNAMO_ENDPOINT }}
               EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}
               EMAIL_USER=${{ secrets.EMAIL_USER }}
               KEY_AES=${{ secrets.KEY_AES }}
