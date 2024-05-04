@@ -1,10 +1,7 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand, QueryCommand, UpdateCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
-import debug from "debug";
 import User from "../core/entities/User";
 import userRepository from "../core/repositories/user.repository";
-
-const logger = debug("paw:userDynamo.datasource");
 
 class UserDynamo implements userRepository {
 
@@ -31,12 +28,10 @@ class UserDynamo implements userRepository {
             };
             const data: any = await this.docClient.send(new QueryCommand(params));
             if (data.$metadata.httpStatusCode >= 400) {
-                logger("[Error] %j", data.toString());
                 throw new Error(data.toString());
             }
             return data;
         } catch (error: any) {
-            logger("[Error] %j", error);
             throw new Error(error);
         } finally {
             this.dynamoClient.destroy();
@@ -53,12 +48,10 @@ class UserDynamo implements userRepository {
             };
             const data: any = await this.docClient.send(new PutCommand(params));
             if (data.$metadata.httpStatusCode >= 400) {
-                logger("[Error] %j", data.toString());
                 throw new Error(data.toString());
             }
             return data;
         } catch (error: any) {
-            logger("[Error] %j", error);
             throw new Error(error);
         } finally {
             this.dynamoClient.destroy();
@@ -82,12 +75,10 @@ class UserDynamo implements userRepository {
             };
             const data: any = await this.docClient.send(new UpdateCommand(params));
             if (data.$metadata.httpStatusCode >= 400) {
-                logger("[Error] %j", data.toString());
                 throw new Error(data.toString());
             }
             return data;
         } catch (error: any) {
-            logger("[Error] %j", error.message);
             throw new Error(error);
         } finally {
             this.dynamoClient.destroy();
@@ -106,12 +97,10 @@ class UserDynamo implements userRepository {
             };
             const data: any = await this.docClient.send(new DeleteCommand(params));
             if (data.$metadata.httpStatusCode >= 400) {
-                logger("[Error] %j", data.toString());
                 throw new Error(data.toString());
             }
             return data;
         } catch (error: any) {
-            logger("[Error] %j", error.message);
             throw new Error(error);
         } finally {
             this.dynamoClient.destroy();

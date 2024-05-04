@@ -29,7 +29,7 @@ const userVerification = (userRepository: UserRepository) => async (body: any) =
             }
         }
     } catch (error: any) {
-        logger("[Error] %j", error.message);
+        logger("[Error] %j", error);
         return {
             body: { code: 3003, msg: "Error tecnico" },
             statusCode: 500
