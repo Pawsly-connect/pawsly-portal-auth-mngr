@@ -30,7 +30,7 @@ const desalting = async (req: any, res: any, next: () => void) => {
 		req.body = JSON.parse(await decryptRequest(req.body) as string);
 		next();
 	} catch (error: any) {
-		logger("[Error] %j", error);
+		logger("[Error] %o", error);
 		return res.status(500).json({
 			code: 3005,
 			msg: `Error obtaining valid request`
