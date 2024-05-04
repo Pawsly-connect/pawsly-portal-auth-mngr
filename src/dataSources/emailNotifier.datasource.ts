@@ -1,13 +1,10 @@
 import emailRepository from "../core/repositories/email.repository";
-import debug from "debug";
 import {
     Transporter,
     SendMailOptions,
     createTransport
 } from "nodemailer";
 import emailTemplates from 'swig-email-templates';
-
-const logger = debug("paw:emailNotifier.datasource");
 
 class EmailNotifier implements emailRepository {
 
@@ -28,13 +25,11 @@ class EmailNotifier implements emailRepository {
             this.transporter = createTransport(smtpConectionSettings);
             this.transporter.verify((err: any, _success: any) => {
                 if(err){
-                    logger("[Error] %j", err);
                     throw new Error(err)
                 }
             });
             return await this.transporter.sendMail(payload);
         } catch (error: any) {
-            logger("[Error] %j", error.message);
             throw new Error(error);
         } finally {
             this.transporter.close();
@@ -46,7 +41,6 @@ class EmailNotifier implements emailRepository {
             const templates = new emailTemplates();
             return await templates.render(template, data);
         } catch (error: any) {
-            logger("[Error] %j", error.message);
             throw new Error(error);
         }
     }

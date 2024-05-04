@@ -27,10 +27,10 @@ app.use(cors({
 
 const desalting = async (req: any, res: any, next: () => void) => {
 	try {
-		req.body = JSON.parse(await decryptRequest(req.body));
+		req.body = JSON.parse(await decryptRequest(req.body) as string);
 		next();
 	} catch (error: any) {
-		logger("[Error] %j", error.message);
+		logger("[Error] %j", error);
 		return res.status(500).json({
 			code: 3005,
 			msg: `Error obtaining valid request`

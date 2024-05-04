@@ -34,7 +34,7 @@ const userLogin = (userRepository: UserRepository) => async (user: User) => {
             }
         }
     } catch (error: any) {
-        logger("[Error] %j", error.message);
+        logger("[Error] %j", error);
         return {
             body: { code: 3002, msg: "Error tecnico" },
             statusCode: 500

@@ -19,8 +19,7 @@ const userRegister = (userRepository: UserRepository, emailRepository: EmailRepo
             const template = path.join(__dirname, '../../..', 'statics/verificationTemplate.html');
             const dataTemplate = {
                 name: user.name,
-                key: encryptData(user.email),
-                base_url: process.env.HOST_FRONT
+                base_url: `${process.env.HOST_FRONT}/#/verify/${encryptData(user.email)}`
             };
             const rendered = await emailRepository.renderTemplate(template, dataTemplate);
             const payloadEmail = {
@@ -41,7 +40,7 @@ const userRegister = (userRepository: UserRepository, emailRepository: EmailRepo
             };
         }
     } catch (error: any) {
-        logger("[Error] %j", error.message);
+        logger("[Error] %j", error);
         return {
             body: { code: 3001, msg: "Error tecnico" },
             statusCode: 500
