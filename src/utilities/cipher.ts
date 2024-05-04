@@ -50,6 +50,7 @@ export function decryptData(encryptedData: WithImplicitCoercion<string> | { [Sym
 export async function decryptRequest(cipherText: string) {
     try {
         const key = await getParam('private_key') as string;
+        console.log(key)
         const keyPem = await importPrivateKey(key);
         const array: any = atob(cipherText).split(',');
         const message = new Uint8Array(array as ArrayBuffer);
