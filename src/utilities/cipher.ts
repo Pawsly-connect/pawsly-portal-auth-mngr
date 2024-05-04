@@ -50,7 +50,6 @@ export function decryptData(encryptedData: WithImplicitCoercion<string> | { [Sym
 export async function decryptRequest(cipherText: string) {
     try {
         const key = await getParam('private_key') as string;
-        console.log(key)
         const keyPem = await importPrivateKey(key);
         const array: any = atob(cipherText).split(',');
         const message = new Uint8Array(array as ArrayBuffer);
@@ -68,26 +67,34 @@ export async function decryptRequest(cipherText: string) {
 }
 
 function importPrivateKey(pem: string) {
-    const binaryDerString = atob(pem);
-    const binaryDer = str2ab(binaryDerString);
-    return crypto.subtle.importKey(
-        "pkcs8",
-        binaryDer,
-        {
-            name: encryptionMethod,
-            length: 2048,
-            hash: "SHA-256"
-        },
-        true,
-        ["decrypt"]
-    );
+    try {
+        const binaryDerString = atob(pem);
+        const binaryDer = str2ab(binaryDerString);
+        return crypto.subtle.importKey(
+            "pkcs8",
+            binaryDer,
+            {
+                name: encryptionMethod,
+                length: 2048,
+                hash: "SHA-256"
+            },
+            true,
+            ["decrypt"]
+        );
+    } catch (error: any) {
+        throw new Error(error);
+    }
 }
 
 function str2ab(str: string) {
-    const buf = new ArrayBuffer(str.length);
-    const bufView = new Uint8Array(buf);
-    for (let i = 0, strLen = str.length; i < strLen; i++) {
-        bufView[i] = str.charCodeAt(i);
+    try {
+        const buf = new ArrayBuffer(str.length);
+        const bufView = new Uint8Array(buf);
+        for (let i = 0, strLen = str.length; i < strLen; i++) {
+            bufView[i] = str.charCodeAt(i);
+        }
+        return buf;
+    } catch (error: any) {
+        throw new Error(error);
     }
-    return buf;
 }
