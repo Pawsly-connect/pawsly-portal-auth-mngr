@@ -52,6 +52,7 @@ export async function decryptRequest(cipherText: string) {
         const key = await getParam('private_key') as string;
         const keyPem = await importPrivateKey(key);
         const array: any = atob(cipherText).split(',');
+        console.log(array)
         const message = new Uint8Array(array as ArrayBuffer);
         const decrypted = await crypto.subtle.decrypt(
             {
