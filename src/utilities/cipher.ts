@@ -51,9 +51,7 @@ export async function decryptRequest(cipherText: string) {
     try {
         const key = await getParam('private_key') as string;
         const keyPem = await importPrivateKey(key);
-        console.log(keyPem)
         const array: any = atob(cipherText).split(',');
-        console.log(array)
         const message = new Uint8Array(array as ArrayBuffer);
         const decrypted = await crypto.subtle.decrypt(
             {
@@ -70,10 +68,8 @@ export async function decryptRequest(cipherText: string) {
 
 function importPrivateKey(pem: string) {
     try {
-        const binaryDerString = atob(pem);
-        console.log(binaryDerString)
+        const binaryDerString = atob(pem.replace("\\n", "\n"));
         const binaryDer = str2ab(binaryDerString);
-        console.log(binaryDer)
         return crypto.subtle.importKey(
             "pkcs8",
             binaryDer,
