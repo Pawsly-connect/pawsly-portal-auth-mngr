@@ -68,7 +68,7 @@ export async function decryptRequest(cipherText: string) {
 
 function importPrivateKey(pem: string) {
     try {
-        const binaryDerString = atob(pem.replace("\\n", "\n"));
+        const binaryDerString = atob(pem.replace(/\s/g, ""));
         const binaryDer = str2ab(binaryDerString);
         return crypto.subtle.importKey(
             "pkcs8",
