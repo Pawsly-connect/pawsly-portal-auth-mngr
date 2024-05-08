@@ -11,8 +11,8 @@ export async function getParam(name: string, decrypted:boolean = false) {
       WithDecryption: decrypted,
     };
     const command = new GetParameterCommand(input);
-    console.log(command)
     const response = await client.send(command);
+    console.log('Imprimiendo valor de parameter ' + response)
     return response.Parameter?.Value;
   } catch (error: any) {
     throw new Error(error);
