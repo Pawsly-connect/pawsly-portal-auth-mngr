@@ -6,7 +6,7 @@ dotEnv.config();
 
 const keySecret = process.env.KEY_AES as string;
 const keyIv = process.env.KEY_IV as string;
-const cipherMethod = 'AES-256-GCM';
+const cipherMethod = 'AES-256-CBC';
 const hashMethod = 'sha512';
 const encryptionMethod = 'RSA-OAEP';
 
