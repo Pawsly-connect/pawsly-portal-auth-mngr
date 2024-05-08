@@ -49,7 +49,7 @@ export function decryptData(encryptedData: WithImplicitCoercion<string> | { [Sym
 
 export async function decryptRequest(cipherText: string) {
     try {
-        const key = await getParam('private_key') as string;
+        const key = await getParam('lambda_variables') as string;
         const keyPem = await importPrivateKey(key);
         const array: any = atob(cipherText).split(',');
         const message = new Uint8Array(array as ArrayBuffer);

@@ -12,6 +12,7 @@ export async function getParam(name: string, decrypted:boolean = false) {
     };
     const command = new GetParameterCommand(input);
     const response = await client.send(command);
+    console.log('Imprimiendo valor de parameter ' + response.Parameter?.Value);
     return response.Parameter?.Value;
   } catch (error: any) {
     throw new Error(error);
