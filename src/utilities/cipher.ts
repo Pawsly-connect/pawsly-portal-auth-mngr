@@ -50,7 +50,7 @@ export function decryptData(encryptedData: WithImplicitCoercion<string> | { [Sym
 export async function decryptRequest(cipherText: string) {
     try {
         const key = await getParam('lambda_variables') as string;
-        var valueSsm=JSON.parse(key)
+        let valueSsm=JSON.parse(key)
         console.log('Imprimiendo valor de parameter ' + valueSsm);
         const keyPem = await importPrivateKey(valueSsm.KEY);
         const array: any = atob(cipherText).split(',');
