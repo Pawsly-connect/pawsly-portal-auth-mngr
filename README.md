@@ -39,7 +39,7 @@ Requirements:
     ```
 3. Run script to configure your local project
     - `& .\config\set-project.ps1` (In powershell Windows)
-    - `sh ./config/set-config.sh` (In bash terminal Linux/Mac)
+    - `sh ./config/set-project.sh` (In bash terminal Linux/Mac)
 4. config values in **.env** file
 4. Install node libraries with `npm i`
 5. Start local server with `npm run local`

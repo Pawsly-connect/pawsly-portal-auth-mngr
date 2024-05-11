@@ -4,5 +4,7 @@ export default interface User {
     password: string,
     stateAccount: boolean,
     dateRegister: string,
-    city: string
+    dateLastUpdate: string,
+    city: string,
+    IsOwnerBussines: boolean
 }

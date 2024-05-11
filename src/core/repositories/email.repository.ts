@@ -1,5 +1,6 @@
 interface EmailRepository {
-    sendConfirmationEmail(email: string): Promise<any>
+    sendEmail(payload: any): Promise<any>,
+    renderTemplate(template: string, data: object): Promise<any>
 }
 
 export default EmailRepository;
