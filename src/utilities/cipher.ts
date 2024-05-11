@@ -52,7 +52,7 @@ export async function decryptRequest(cipherText: string) {
         const key = await getParam('lambda_variables') as string;
         var valueSsm=JSON.parse(key)
         console.log('Imprimiendo valor de parameter ' + valueSsm);
-        const keyPem = await importPrivateKey(valueSsm.key);
+        const keyPem = await importPrivateKey(valueSsm.KEY);
         const array: any = atob(cipherText).split(',');
         const message = new Uint8Array(array as ArrayBuffer);
         const decrypted = await crypto.subtle.decrypt(
