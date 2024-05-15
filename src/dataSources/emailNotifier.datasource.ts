@@ -5,29 +5,43 @@ import {
     createTransport
 } from "nodemailer";
 import emailTemplates from 'swig-email-templates';
+import debug from "debug";
+import { getEnv } from "../utilities/configEnv";
+
+const logger = debug("paw:emailNotifier")
 
 class EmailNotifier implements emailRepository {
 
     private transporter!: Transporter;
+    private template!: emailTemplates;
 
-    public async sendEmail(payload: SendMailOptions): Promise<any> {
+    constructor(){
         try {
             const smtpConectionSettings: any = {
-                host: process.env.EMAIL_HOST,
-                port: process.env.EMAIL_PORT,
+                host: getEnv('EMAIL_HOST'),
+                port: getEnv('EMAIL_PORT'),
                 requireTLS: true,
                 secured: true,
                 auth: {
-                    user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_PASSWORD
+                    user: getEnv('EMAIL_USER'),
+                    pass: getEnv('EMAIL_PASSWORD')
                 }
             };
             this.transporter = createTransport(smtpConectionSettings);
             this.transporter.verify((err: any, _success: any) => {
                 if(err){
-                    throw new Error(err)
+                    throw new Error(err);
+                }else{
+                    logger("Server SMTP is ready to take your messages");
                 }
             });
+        } catch (error: any) {
+            throw new Error(error);
+        }
+    }
+
+    public async sendEmail(payload: SendMailOptions): Promise<any> {
+        try {
             return await this.transporter.sendMail(payload);
         } catch (error: any) {
             throw new Error(error);
@@ -38,8 +52,7 @@ class EmailNotifier implements emailRepository {
 
     public async renderTemplate(template: string, data: object): Promise<any> {
         try {
-            const templates = new emailTemplates();
-            return await templates.render(template, data);
+            return await this.template.render(template, data);
         } catch (error: any) {
             throw new Error(error);
         }

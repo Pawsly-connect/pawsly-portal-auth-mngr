@@ -1,10 +1,10 @@
 import EmailNotifier from "../../dataSources/emailNotifier.datasource";
-import UserDynamo from "../../dataSources/userDynamo.datasource";
+import DynamoDB from "../../dataSources/dynamoDb.datasource";
 import userRegister from "./userRegister.interactor";
 import userLogin from "./userLogin.interactor";
 import userVerification from "./userVerification.interactor";
 
-const userRepository = new UserDynamo();
+const userRepository = new DynamoDB();
 const emailRepository = new EmailNotifier();
 
 const interactors = {

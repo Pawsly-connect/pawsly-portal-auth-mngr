@@ -1,23 +1,36 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand, QueryCommand, UpdateCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
 import User from "../core/entities/User";
-import userRepository from "../core/repositories/user.repository";
+import dynamoDb from "../core/repositories/dynamo.repository";
+import { isNotLocalEnv } from '../utilities/configEnv';
+import debug from "debug";
+import { getEnv } from "../utilities/configEnv";
 
-class UserDynamo implements userRepository {
+const logger = debug("paw:dynamoDb");
+
+class DynamoDB implements dynamoDb {
 
     private dynamoClient!: DynamoDBClient;
     private docClient!: DynamoDBDocumentClient;
 
-    private client(){
-        this.dynamoClient = new DynamoDBClient({
-            region: process.env.REGION_AWS_LAMBDA
-        });
-        return DynamoDBDocumentClient.from(this.dynamoClient);
+    constructor(){
+        let paramsDB = {
+            region: getEnv('REGION_AWS_LAMBDA')
+        }
+        if(!isNotLocalEnv()){
+            paramsDB["endpoint"] = getEnv('DYNAMO_ENDPOINT');
+        }
+        try {
+            this.dynamoClient = new DynamoDBClient(paramsDB);
+            this.docClient = DynamoDBDocumentClient.from(this.dynamoClient);
+            logger("Connected to database successfully");
+        } catch (error: any) {
+            throw new Error(error);
+        }
     }
 
-    public async read(email: string): Promise<any> {
+    public async readUser(email: string): Promise<any> {
         try {
-            this.docClient = this.client();
             const params = {
                 TableName: "users",
                 KeyConditionExpression: "#email = :email",
@@ -33,15 +46,11 @@ class UserDynamo implements userRepository {
             return data;
         } catch (error: any) {
             throw new Error(error);
-        } finally {
-            this.dynamoClient.destroy();
-            this.docClient.destroy();
         }
     }
 
-    public async create(user: User): Promise<any> {
+    public async createUser(user: User): Promise<any> {
         try {
-            this.docClient = this.client();
             const params = {
                 TableName: "users",
                 Item: user,
@@ -53,15 +62,11 @@ class UserDynamo implements userRepository {
             return data;
         } catch (error: any) {
             throw new Error(error);
-        } finally {
-            this.dynamoClient.destroy();
-            this.docClient.destroy();
         }
     }
 
-    public async update(email: string): Promise<any> {
+    public async updateUser(email: string): Promise<any> {
         try {
-            this.docClient = this.client();
             const params = {
                 TableName: "users",
                 Key: {
@@ -80,15 +85,11 @@ class UserDynamo implements userRepository {
             return data;
         } catch (error: any) {
             throw new Error(error);
-        } finally {
-            this.dynamoClient.destroy();
-            this.docClient.destroy();
         }
     }
 
-    public async delete(email: string): Promise<any> {
+    public async deleteUser(email: string): Promise<any> {
         try {
-            this.docClient = this.client();
             const params = {
                 TableName: "users",
                 Key: {
@@ -102,11 +103,8 @@ class UserDynamo implements userRepository {
             return data;
         } catch (error: any) {
             throw new Error(error);
-        } finally {
-            this.dynamoClient.destroy();
-            this.docClient.destroy();
         }
     }
 }
 
-export default UserDynamo;
+export default DynamoDB;
