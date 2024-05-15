@@ -47,7 +47,7 @@ const loadEnv = async () => {
     } else {
         envValues = dotenv.parse(fs.readFileSync('.env'));
     }
-    logger("Env values loaded successfully");
+    logger("Env values loaded successfully %j", envValues);
 }
 
 export const getEnv = (key: string): string => {

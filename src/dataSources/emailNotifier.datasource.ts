@@ -35,6 +35,7 @@ class EmailNotifier implements emailRepository {
                     logger("Server SMTP is ready to take your messages");
                 }
             });
+            this.template = new emailTemplates();
         } catch (error: any) {
             throw new Error(error);
         }
