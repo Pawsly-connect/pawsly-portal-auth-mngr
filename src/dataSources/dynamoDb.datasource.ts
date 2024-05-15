@@ -14,11 +14,10 @@ class DynamoDB implements dynamoDb {
     private docClient!: DynamoDBDocumentClient;
 
     constructor(){
-        let paramsDB = {
-            region: getEnv('REGION_AWS_LAMBDA')
-        }
+        const paramsDB: { [key: string]: any } = {};
+        paramsDB.region = getEnv('REGION_AWS_LAMBDA');
         if(!isNotLocalEnv()){
-            paramsDB["endpoint"] = getEnv('DYNAMO_ENDPOINT');
+            paramsDB.endpoint = getEnv('DYNAMO_ENDPOINT');
         }
         try {
             this.dynamoClient = new DynamoDBClient(paramsDB);
