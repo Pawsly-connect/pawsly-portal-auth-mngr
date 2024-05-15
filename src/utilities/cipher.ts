@@ -1,11 +1,7 @@
 import cryptoNode from 'node:crypto';
 import crypto from 'crypto';
-import dotEnv from 'dotenv';
-import { getParam } from './parameterStore';
-dotEnv.config();
+import { getEnv } from './configEnv';
 
-const keySecret = process.env.KEY_AES as string;
-const keyIv = process.env.KEY_IV as string;
 const cipherMethod = 'AES-256-CBC';
 const hashMethod = 'sha512';
 const encryptionMethod = 'RSA-OAEP';
@@ -21,6 +17,8 @@ export function hashData(data: string) {
 
 export function encryptData(data: string) {
     try {
+        const keySecret = getEnv('KEY_AES');
+        const keyIv = getEnv('KEY_IV');
         const key = hashData(keySecret).substring(0, 32);
         const encryptionIV = hashData(keyIv).substring(0, 16);
         const cipher = cryptoNode.createCipheriv(cipherMethod, key, encryptionIV);
@@ -34,6 +32,8 @@ export function encryptData(data: string) {
 
 export function decryptData(encryptedData: WithImplicitCoercion<string> | { [Symbol.toPrimitive](hint: "string"): string; }) {
     try {
+        const keySecret = getEnv('KEY_AES');
+        const keyIv = getEnv('KEY_IV');
         const key = hashData(keySecret).substring(0, 32);
         const encryptionIV = hashData(keyIv).substring(0, 16);
         const buff = Buffer.from(encryptedData, 'base64');
@@ -49,8 +49,8 @@ export function decryptData(encryptedData: WithImplicitCoercion<string> | { [Sym
 
 export async function decryptRequest(cipherText: string) {
     try {
-        const key = await getParam('secrets_auth_mngr', 'KEY_CIPHER') as string;
-        const keyPem = await importPrivateKey(key);
+        const keyCipher = getEnv('KEY_CIPHER');
+        const keyPem = await importPrivateKey(keyCipher);
         const array: any = atob(cipherText).split(',');
         const message = new Uint8Array(array as ArrayBuffer);
         const decrypted = await crypto.subtle.decrypt(

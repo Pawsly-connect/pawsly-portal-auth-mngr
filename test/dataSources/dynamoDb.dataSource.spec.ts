@@ -1,6 +1,6 @@
 import chai from "chai";
 import sinon from 'sinon';
-import userDynamo from '../../src/dataSources/userDynamo.datasource';
+import dynamoDb from '../../src/dataSources/dynamoDb.datasource';
 
 const expect = chai.expect;
 const sandbox = sinon.createSandbox();

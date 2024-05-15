@@ -4,9 +4,7 @@ import request from 'supertest';
 import interactor from '../../src/core/interactors';
 import app from '../../src/index';
 import mocksRequest from '../mocks/requests.mock';
-import dotEnv from 'dotenv';
 
-dotEnv.config();
 const expect = chai.expect;
 const sandbox = sinon.createSandbox();
 

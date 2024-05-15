@@ -1,5 +1,4 @@
-import express, { request } from 'express';
-import dotEnv from 'dotenv';
+import express from 'express';
 import cors from 'cors';
 import registerController from './controllers/registerHttp.controller';
 import loginController from './controllers/loginHttp.controller';
@@ -8,7 +7,6 @@ import morgan from "morgan";
 import debug from "debug";
 import { decryptRequest } from './utilities/cipher';
 
-dotEnv.config();
 const logger = debug("paw:index");
 const app = express();
 app.disable('x-powered-by');

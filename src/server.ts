@@ -1,6 +1,7 @@
 import http from 'http';
 import app from './index';
 import debug from "debug";
+import { getEnv } from './utilities/configEnv';
 import serverlessExpress from 'aws-serverless-express';
 
 const isInLambda = !!process.env.LAMBDA_TASK_ROOT;
@@ -11,7 +12,7 @@ if (isInLambda) {
     exports.handler = (event: any, context: any) => serverlessExpress.proxy(serverless, event, context);
 }else if(process.env.NODE_ENV === 'local'){
     const server = http.createServer(app);
-    const port: any = process.env.PORT || 3000;
+    const port: any = Number(getEnv('PORT')) || 3000;
 
     app.set('port', port);
 

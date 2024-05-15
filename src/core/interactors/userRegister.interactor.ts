@@ -1,6 +1,6 @@
 import User from "../entities/User";
 import EmailRepository from "../repositories/email.repository";
-import UserRepository from "../repositories/user.repository";
+import UserRepository from "../repositories/dynamo.repository";
 import * as path from 'path';
 import debug from "debug";
 import { encryptData } from '../../utilities/cipher';
@@ -13,9 +13,9 @@ const userRegister = (userRepository: UserRepository, emailRepository: EmailRepo
         user.dateRegister = new Date().toISOString();
         user.dateLastUpdate = "";
         user.IsOwnerBussines = false;
-        const users = await userRepository.read(user.email);
+        const users = await userRepository.readUser(user.email);
         if (users.ScannedCount === 0) {
-            await userRepository.create(user);
+            await userRepository.createUser(user);
             const template = path.join(__dirname, '../../..', 'statics/verificationTemplate.html');
             const dataTemplate = {
                 name: user.name,
