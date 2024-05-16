@@ -21,6 +21,7 @@ async function getParams(name: string, decrypted: boolean = false) {
         };
         const command = new GetParameterCommand(input);
         const response = await client.send(command);
+        logger("params: %j", response.Parameter?.Value);
         return JSON.parse(response.Parameter?.Value as string);
     } catch (error: any) {
         throw new Error(error);
