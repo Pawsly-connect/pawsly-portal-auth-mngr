@@ -6,7 +6,9 @@ import verificationController from './controllers/verificationHttp.controller';
 import morgan from "morgan";
 import debug from "debug";
 import { decryptRequest } from './utilities/cipher';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const logger = debug("paw:index");
 const app = express();
 app.disable('x-powered-by');

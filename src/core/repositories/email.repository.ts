@@ -1,6 +1,7 @@
 interface EmailRepository {
     sendEmail(payload: any): Promise<any>,
-    renderTemplate(template: string, data: object): Promise<any>
+    renderTemplate(template: string, data: object): Promise<any>,
+    createInstance(): Promise<any>
 }
 
 export default EmailRepository;

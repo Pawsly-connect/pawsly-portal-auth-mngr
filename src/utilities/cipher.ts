@@ -2,12 +2,9 @@ import cryptoNode from 'node:crypto';
 import crypto from 'crypto';
 import { getEnv } from './configEnv';
 
-const cipherMethod = 'AES-256-CBC';
-const hashMethod = 'sha512';
-const encryptionMethod = 'RSA-OAEP';
-
 export function hashData(data: string) {
     try {
+        const hashMethod = getEnv('HASH_METHOD');
         const hash = cryptoNode.createHash(hashMethod);
         return hash.update(data).digest('hex');
     } catch (error: any) {
@@ -17,6 +14,7 @@ export function hashData(data: string) {
 
 export function encryptData(data: string) {
     try {
+        const cipherMethod = getEnv('CIPHER_METHOD');
         const keySecret = getEnv('KEY_AES');
         const keyIv = getEnv('KEY_IV');
         const key = hashData(keySecret).substring(0, 32);
@@ -32,6 +30,7 @@ export function encryptData(data: string) {
 
 export function decryptData(encryptedData: WithImplicitCoercion<string> | { [Symbol.toPrimitive](hint: "string"): string; }) {
     try {
+        const cipherMethod = getEnv('CIPHER_METHOD');
         const keySecret = getEnv('KEY_AES');
         const keyIv = getEnv('KEY_IV');
         const key = hashData(keySecret).substring(0, 32);
@@ -49,15 +48,16 @@ export function decryptData(encryptedData: WithImplicitCoercion<string> | { [Sym
 
 export async function decryptRequest(cipherText: string) {
     try {
-        const keyCipher = getEnv('KEY_CIPHER');
-        const keyPem = await importPrivateKey(keyCipher);
+        const encryptionMethod = getEnv('ENCRYPT_METHOD');
+        const keyPem = getEnv('KEY_PEM');
+        const keyPemImported = await importPrivateKey(keyPem, encryptionMethod);
         const array: any = atob(cipherText).split(',');
         const message = new Uint8Array(array as ArrayBuffer);
         const decrypted = await crypto.subtle.decrypt(
             {
                 name: encryptionMethod
             },
-            keyPem,
+            keyPemImported,
             message
         );
         return new TextDecoder("utf-8").decode(decrypted);
@@ -66,7 +66,7 @@ export async function decryptRequest(cipherText: string) {
     }
 }
 
-function importPrivateKey(pem: string) {
+function importPrivateKey(pem: string, encryptMethod: string) {
     try {
         const binaryDerString = atob(pem.replace(/\*/g, ""));
         const binaryDer = str2ab(binaryDerString);
@@ -74,7 +74,7 @@ function importPrivateKey(pem: string) {
             "pkcs8",
             binaryDer,
             {
-                name: encryptionMethod,
+                name: encryptMethod,
                 length: 2048,
                 hash: "SHA-256"
             },

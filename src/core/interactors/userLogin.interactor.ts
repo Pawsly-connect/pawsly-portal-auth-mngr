@@ -1,12 +1,13 @@
 import User from "../entities/User";
-import UserRepository from "../repositories/dynamo.repository";
+import DynamoRepository from "../repositories/dynamo.repository";
 import debug from "debug";
 
 const logger = debug("paw:userLogin.interactor");
 
-const userLogin = (userRepository: UserRepository) => async (user: User) => {
+const userLogin = (dynamoRepository: DynamoRepository) => async (user: User) => {
     try {
-        const users = await userRepository.readUser(user.email);
+        await dynamoRepository.createInstance();
+        const users = await dynamoRepository.readUser(user.email);
         if (users.ScannedCount === 1) {
             const dataUser = users.Items[0];
             if(user.password === dataUser.password){
