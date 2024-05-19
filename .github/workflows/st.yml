@@ -23,6 +23,6 @@ jobs:
         HOST_FRONT=${{ secrets.HOST_FRONT }}
         CIPHER_METHOD=${{ secrets.CIPHER_METHOD }}
         HASH_METHOD=${{ secrets.HASH_METHOD }}
-        ENCRPYT_METHOD=${{ secrets.ENCRPYT_METHOD }}
+        ENCRYPT_METHOD=${{ secrets.ENCRYPT_METHOD }}
         NODE_ENV=staging
         DEBUG=paw:*
