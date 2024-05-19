@@ -11,7 +11,6 @@ export function isNotLocalEnv() {
 
 const getParams = (name: string, decrypted: boolean = false) => {
     logger("Getting env values from parameter store");
-    let parameters = {};
     const client = new SSMClient({
         region: process.env.REGION
     });
@@ -20,21 +19,24 @@ const getParams = (name: string, decrypted: boolean = false) => {
         WithDecryption: decrypted
     };
     const command = new GetParameterCommand(input);
-    client.send(command).then((response) => {
-        parameters = JSON.parse(response.Parameter?.Value as string);
-    }).catch((err) => {
-        throw new Error(err);
+    return new Promise((resolve, reject) => {
+        client.send(command).then((response) => {
+            const parameters = JSON.parse(response.Parameter?.Value as string);
+            logger("Parameters loaded: %o", parameters);
+            client.destroy();
+            resolve(parameters);
+        }).catch((err) => {
+            client.destroy();
+            reject(new Error(err));
+        });
     });
-    logger("Parameters loaded: %o", parameters);
-    client.destroy();
-    return parameters;
 }
 
 export const loadEnv = () => {
     try {
         let envValues: { [key: string]: any } = {};
         if (isNotLocalEnv()) {
-            envValues = getParams("secrets_auth_mngr") as any;
+            getParams("secrets_auth_mngr").then(params => {envValues = params as any});
         } else {
             envValues = dotenv.parse(fs.readFileSync('.env'));
         }
