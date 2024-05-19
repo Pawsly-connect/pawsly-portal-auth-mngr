@@ -32,11 +32,12 @@ const getParams = (name: string, decrypted: boolean = false) => {
     });
 }
 
-export const loadEnv = () => {
+export const loadEnv = async () => {
     try {
         let envValues: { [key: string]: any } = {};
         if (isNotLocalEnv()) {
-            getParams("secrets_auth_mngr").then(params => {envValues = params as any});
+            const params = await getParams("secrets_auth_mngr");
+            envValues = params as any;
         } else {
             envValues = dotenv.parse(fs.readFileSync('.env'));
         }
