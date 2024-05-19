@@ -10,7 +10,6 @@ const logger = debug("paw:server");
 const startServer = async () => {
     try {
         await loadEnv();
-        
         if (isInLambda) {
             const serverless = serverlessExpress.createServer(app);
             exports.handler = (event: any, context: any) => serverlessExpress.proxy(serverless, event, context);
