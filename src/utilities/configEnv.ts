@@ -22,6 +22,7 @@ function getParams(name: string, decrypted: boolean = false) {
         const command = new GetParameterCommand(input);
         client.send(command).then((response) => {
             parameters = JSON.parse(response.Parameter?.Value as string);
+            logger("Parameters loaded: %o", parameters);
         });
         return parameters;
     } catch (error: any) {
@@ -46,11 +47,6 @@ export const loadEnv = () => {
     }
 }
 
-export const getEnv = (key: string): any => {
-    try{
-        return process.env[key];
-    } catch(err){
-        logger("Error getting env value: %o", err);
-        throw { status: 500 };
-    };
+export const getEnv = (key: string): string => {
+    return process.env[key] || '';
 }
