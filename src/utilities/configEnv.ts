@@ -22,8 +22,8 @@ function getParams(name: string, decrypted: boolean = false) {
         const command = new GetParameterCommand(input);
         client.send(command).then((response) => {
             parameters = JSON.parse(response.Parameter?.Value as string);
-            logger("Parameters loaded: %o", parameters);
         });
+        logger("Parameters loaded: %o", parameters);
         return parameters;
     } catch (error: any) {
         throw new Error(error);
