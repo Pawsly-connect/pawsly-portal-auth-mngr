@@ -1,16 +1,19 @@
 import http from 'http';
 import app from './index';
 import debug from "debug";
-import { getEnv } from './utilities/configEnv';
+import { getEnv, isNotLocalEnv, loadEnv } from './utilities/configEnv';
 import serverlessExpress from 'aws-serverless-express';
+import dotenv from 'dotenv';
 
 const isInLambda = !!process.env.LAMBDA_TASK_ROOT;
 const logger = debug("paw:server");
+loadEnv().then(() => {});
+dotenv.config();
 
 if (isInLambda) {
     const serverless = serverlessExpress.createServer(app);
     exports.handler = (event: any, context: any) => serverlessExpress.proxy(serverless, event, context);
-}else if(process.env.NODE_ENV === 'local'){
+}else if(!isNotLocalEnv()){
     const server = http.createServer(app);
     const port: any = Number(getEnv('PORT')) || 3000;
 

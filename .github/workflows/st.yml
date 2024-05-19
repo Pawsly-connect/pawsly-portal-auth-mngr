@@ -17,9 +17,12 @@ jobs:
     secrets:
       AWS_ROLE_DEPLOY_BACKEND: ${{ secrets.AWS_ROLE_DEPLOY_BACKEND }}
       ENV_VARS: >
-        REGION_AWS_LAMBDA=${{ secrets.REGION_AWS_LAMBDA }}
+        REGION=${{ secrets.REGION }}
         EMAIL_HOST=${{ secrets.EMAIL_HOST }}
         EMAIL_PORT=${{ secrets.EMAIL_PORT }}
         HOST_FRONT=${{ secrets.HOST_FRONT }}
+        CIPHER_METHOD=${{ secrets.CIPHER_METHOD }}
+        HASH_METHOD=${{ secrets.HASH_METHOD }}
+        ENCRYPT_METHOD=${{ secrets.ENCRYPT_METHOD }}
         NODE_ENV=staging
         DEBUG=paw:*

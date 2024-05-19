@@ -1,21 +1,23 @@
 import User from "../entities/User";
 import EmailRepository from "../repositories/email.repository";
-import UserRepository from "../repositories/dynamo.repository";
+import DynamoRepository from "../repositories/dynamo.repository";
 import * as path from 'path';
 import debug from "debug";
 import { encryptData } from '../../utilities/cipher';
 
 const logger = debug("paw:userRegister.interactor");
 
-const userRegister = (userRepository: UserRepository, emailRepository: EmailRepository) => async (user: User) => {
+const userRegister = (dynamoRepository: DynamoRepository, emailRepository: EmailRepository) => async (user: User) => {
     try {
+        await dynamoRepository.createInstance();
+        await emailRepository.createInstance();
         user.stateAccount = false;
         user.dateRegister = new Date().toISOString();
         user.dateLastUpdate = "";
         user.IsOwnerBussines = false;
-        const users = await userRepository.readUser(user.email);
+        const users = await dynamoRepository.readUser(user.email);
         if (users.ScannedCount === 0) {
-            await userRepository.createUser(user);
+            await dynamoRepository.createUser(user);
             const template = path.join(__dirname, '../../..', 'statics/verificationTemplate.html');
             const dataTemplate = {
                 name: user.name,

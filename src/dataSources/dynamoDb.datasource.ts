@@ -13,18 +13,20 @@ class DynamoDB implements dynamoDb {
     private dynamoClient!: DynamoDBClient;
     private docClient!: DynamoDBDocumentClient;
 
-    constructor(){
-        const paramsDB: { [key: string]: any } = {};
-        paramsDB.region = getEnv('REGION_AWS_LAMBDA');
-        if(!isNotLocalEnv()){
-            paramsDB.endpoint = getEnv('DYNAMO_ENDPOINT');
-        }
-        try {
-            this.dynamoClient = new DynamoDBClient(paramsDB);
-            this.docClient = DynamoDBDocumentClient.from(this.dynamoClient);
-            logger("Connected to database successfully");
-        } catch (error: any) {
-            throw new Error(error);
+    public async createInstance(){
+        if(!this.dynamoClient && !this.docClient){
+            try {
+                const paramsDB: { [key: string]: any } = {};
+                paramsDB.region = await getEnv('REGION');
+                if(!isNotLocalEnv()){
+                    paramsDB.endpoint = await getEnv('DYNAMO_ENDPOINT');
+                }
+                this.dynamoClient = new DynamoDBClient(paramsDB);
+                this.docClient = DynamoDBDocumentClient.from(this.dynamoClient);
+                logger("Connected to database successfully");
+            } catch (error: any) {
+                throw new Error(error);
+            }
         }
     }
 

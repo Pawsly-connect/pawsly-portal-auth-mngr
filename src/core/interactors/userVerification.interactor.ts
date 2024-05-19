@@ -1,13 +1,14 @@
-import UserRepository from "../repositories/dynamo.repository";
+import DynamoRepository from "../repositories/dynamo.repository";
 import { decryptData } from '../../utilities/cipher';
 import debug from "debug";
 
 const logger = debug("paw:userVerification.interactor");
 
-const userVerification = (userRepository: UserRepository) => async (body: any) => {
+const userVerification = (dynamoRepository: DynamoRepository) => async (body: any) => {
     try {
+        await dynamoRepository.createInstance()
         const email = decryptData(body.key);
-        const users = await userRepository.readUser(email);
+        const users = await dynamoRepository.readUser(email);
         if (users.ScannedCount === 1) {
             const dataUser = users.Items[0];
             if(dataUser.stateAccount){
@@ -16,7 +17,7 @@ const userVerification = (userRepository: UserRepository) => async (body: any) =
                     statusCode: 400
                 }
             }else{
-                await userRepository.updateUser(email);
+                await dynamoRepository.updateUser(email);
                 return {
                     body: { code: 1003, msg: `Cuenta verificada exitosamente` },
                     statusCode: 200
