@@ -7,33 +7,35 @@ import serverlessExpress from 'aws-serverless-express';
 const isInLambda = !!process.env.LAMBDA_TASK_ROOT;
 const logger = debug("paw:server");
 
-const startServer = async () => {
-    try {
-        await loadEnv();
-        if (isInLambda) {
-            const serverless = serverlessExpress.createServer(app);
-            exports.handler = (event: any, context: any) => serverlessExpress.proxy(serverless, event, context);
-        }else if(!isNotLocalEnv()){
-            const server = http.createServer(app);
-            const port: any = Number(getEnv('PORT')) || 3000;
+const startLocalServer = async () => {
+    await loadEnv();
+    const server = http.createServer(app);
+    const port: any = Number(getEnv('PORT')) || 3000;
 
-            app.set('port', port);
+    app.set('port', port);
 
-            server.listen(port);
-            server.on('error', (error: any) => {
-                logger(error);
-                throw error;
-            });
-            server.on('listening', () => {
-                logger(`listen on ${port}`);
-            });
-            module.exports = server;
-        }else{
-            logger('Error executing as lambda.');
-        }
-    } catch (error) {
-        logger("Error al iniciar el servidor: %o", error);
-    }
+    server.listen(port);
+    server.on('error', (error: any) => {
+        logger(error);
+        throw error;
+    });
+    server.on('listening', () => {
+        logger(`listen on ${port}`);
+    });
+
+    return server;
 }
 
-startServer();
+const startLambdaServer = async (event: any, context: any) => {
+    await loadEnv();
+    const serverless = serverlessExpress.createServer(app);
+    return serverlessExpress.proxy(serverless, event, context);
+}
+
+if(isInLambda){
+    exports.handler = async (event: any, context: any) => await startLambdaServer(event, context);
+}else if (!isNotLocalEnv()) {
+    module.exports = startLocalServer();
+}else{
+    logger("Error executing as lambda")
+}
