@@ -28,14 +28,21 @@ async function getParams(name: string, decrypted: boolean = false) {
     }
 }
 
-export const loadEnv = async () => {
-    let envValues: { [key: string]: any } = {};
-    if (isNotLocalEnv()) {
-        envValues = await getParams("secrets_auth_mngr");
-    } else {
-        envValues = dotenv.parse(fs.readFileSync('.env'));
-    }
-    dotenv.populate(process.env as any, envValues, {override: true});
+export const loadEnv = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let envValues: { [key: string]: any } = {};
+            if (isNotLocalEnv()) {
+                envValues = await getParams("secrets_auth_mngr");
+            } else {
+                envValues = dotenv.parse(fs.readFileSync('.env'));
+            }
+            dotenv.populate(process.env as any, envValues, {override: true});
+            resolve("Variables de entorno cargadas");
+        } catch (error) {
+            reject("Error al cargar las variables de entorno: "+error);
+        }
+    })
 }
 
 export const getEnv = (key: string): any => {
