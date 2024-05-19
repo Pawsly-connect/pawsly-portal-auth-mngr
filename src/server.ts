@@ -33,7 +33,7 @@ const startLambdaServer = async (event: any, context: any) => {
 }
 
 if(isInLambda){
-    exports.handler = async (event: any, context: any) => await startLambdaServer(event, context);
+    exports.handler = (event: any, context: any) => startLambdaServer(event, context);
 }else if (!isNotLocalEnv()) {
     module.exports = startLocalServer();
 }else{
