@@ -13,7 +13,6 @@ function getParams(name: string, decrypted: boolean = false) {
     const client = new SSMClient({
         region: process.env.REGION
     });
-    let parameters = {};
     try {
         const input = {
             Name: name,
@@ -21,10 +20,10 @@ function getParams(name: string, decrypted: boolean = false) {
         };
         const command = new GetParameterCommand(input);
         client.send(command).then((response) => {
-            parameters = JSON.parse(response.Parameter?.Value as string);
+            const parameters = JSON.parse(response.Parameter?.Value as string);
+            logger("Parameters loaded: %o", parameters);
+            return parameters;
         });
-        logger("Parameters loaded: %o", parameters);
-        return parameters;
     } catch (error: any) {
         throw new Error(error);
     } finally {
@@ -36,7 +35,7 @@ export const loadEnv = () => {
     try {
         let envValues: { [key: string]: any } = {};
         if (isNotLocalEnv()) {
-            envValues = getParams("secrets_auth_mngr");
+            envValues = getParams("secrets_auth_mngr") as any;
         } else {
             envValues = dotenv.parse(fs.readFileSync('.env'));
         }
