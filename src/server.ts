@@ -3,12 +3,10 @@ import app from './index';
 import debug from "debug";
 import { getEnv, isNotLocalEnv, loadEnv } from './utilities/configEnv';
 import serverlessExpress from 'aws-serverless-express';
-import dotenv from 'dotenv';
 
 const isInLambda = !!process.env.LAMBDA_TASK_ROOT;
 const logger = debug("paw:server");
 loadEnv();
-dotenv.config();
 
 if (isInLambda) {
     const serverless = serverlessExpress.createServer(app);
