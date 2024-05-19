@@ -11,6 +11,7 @@ export function isNotLocalEnv() {
 
 function getParams(name: string, decrypted: boolean = false) {
     logger("Getting env values from parameter store");
+    let parameters = {};
     const client = new SSMClient({
         region: process.env.REGION
     });
@@ -20,12 +21,13 @@ function getParams(name: string, decrypted: boolean = false) {
     };
     const command = new GetParameterCommand(input);
     client.send(command).then((response) => {
-        const parameters = JSON.parse(response.Parameter?.Value as string);
-        logger("Parameters loaded: %o", parameters);
-        return parameters;
+        parameters = JSON.parse(response.Parameter?.Value as string);
     }).catch((err) => {
         throw new Error(err);
     });
+    logger("Parameters loaded: %o", parameters);
+    client.destroy();
+    return parameters;
 }
 
 export const loadEnv = () => {
