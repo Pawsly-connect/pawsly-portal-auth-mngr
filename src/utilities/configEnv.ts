@@ -9,18 +9,21 @@ export function isNotLocalEnv() {
     return ["qa", "staging", "production"].includes(process.env.NODE_ENV as string)
 }
 
-async function getParams(name: string, decrypted: boolean = false) {
+function getParams(name: string, decrypted: boolean = false) {
     const client = new SSMClient({
         region: process.env.REGION
     });
+    let parameters = {};
     try {
         const input = {
             Name: name,
             WithDecryption: decrypted
         };
         const command = new GetParameterCommand(input);
-        const response = await client.send(command);
-        return JSON.parse(response.Parameter?.Value as string);
+        client.send(command).then((response) => {
+            parameters = JSON.parse(response.Parameter?.Value as string);
+        });
+        return parameters;
     } catch (error: any) {
         throw new Error(error);
     } finally {
@@ -29,20 +32,18 @@ async function getParams(name: string, decrypted: boolean = false) {
 }
 
 export const loadEnv = () => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let envValues: { [key: string]: any } = {};
-            if (isNotLocalEnv()) {
-                envValues = await getParams("secrets_auth_mngr");
-            } else {
-                envValues = dotenv.parse(fs.readFileSync('.env'));
-            }
-            dotenv.populate(process.env as any, envValues, {override: true});
-            resolve("Variables de entorno cargadas");
-        } catch (error) {
-            reject("Error al cargar las variables de entorno: "+error);
+    try {
+        let envValues: { [key: string]: any } = {};
+        if (isNotLocalEnv()) {
+            envValues = getParams("secrets_auth_mngr");
+        } else {
+            envValues = dotenv.parse(fs.readFileSync('.env'));
         }
-    })
+        dotenv.populate(process.env as any, envValues, {override: true});
+        logger("Variables de entorno cargadas");
+    } catch (error) {
+        logger("Error al cargar las variables de entorno: %o", error);
+    }
 }
 
 export const getEnv = (key: string): any => {
