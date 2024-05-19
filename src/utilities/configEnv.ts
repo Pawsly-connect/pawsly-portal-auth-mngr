@@ -9,7 +9,7 @@ export function isNotLocalEnv() {
     return ["qa", "staging", "production"].includes(process.env.NODE_ENV as string)
 }
 
-function getParams(name: string, decrypted: boolean = false) {
+const getParams = (name: string, decrypted: boolean = false) => {
     logger("Getting env values from parameter store");
     let parameters = {};
     const client = new SSMClient({
