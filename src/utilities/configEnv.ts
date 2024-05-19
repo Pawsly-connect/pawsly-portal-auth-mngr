@@ -25,8 +25,6 @@ function getParams(name: string, decrypted: boolean = false) {
         return parameters;
     }).catch((err) => {
         throw new Error(err);
-    }).finally(() => {
-        client.destroy();
     });
 }
 
