@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 
 const isInLambda = !!process.env.LAMBDA_TASK_ROOT;
 const logger = debug("paw:server");
-loadEnv().then(() => {});
+loadEnv().then();
 dotenv.config();
 
 if (isInLambda) {
