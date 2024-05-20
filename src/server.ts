@@ -1,15 +1,18 @@
 import http from 'http';
 import app from './index';
 import debug from "debug";
-import { loadEnv } from './utilities/configEnv';
-import awsServerlessExpress from 'aws-serverless-express';
+import { getEnv, isNotLocalEnv, loadEnv } from './utilities/configEnv';
+import serverlessExpress from 'aws-serverless-express';
 
 const isInLambda = !!process.env.LAMBDA_TASK_ROOT;
 const logger = debug("paw:server");
 
-const startLocalServer = () => {
+const startLocalServer = async () => {
+    await loadEnv();
     const server = http.createServer(app);
-    const port: any = Number(process.env.PORT) || 3000;
+    const port: any = Number(getEnv('PORT')) || 3000;
+
+    app.set('port', port);
 
     server.listen(port);
     server.on('error', (error: any) => {
@@ -17,40 +20,21 @@ const startLocalServer = () => {
         throw error;
     });
     server.on('listening', () => {
-        logger(`Server is listening on port ${port}`);
+        logger(`listen on ${port}`);
     });
-
     return server;
 }
 
-const startLambdaServer = async () => {
-    const server = awsServerlessExpress.createServer(app);
-    return server;
-}
-
-const startServer = async () => {
+const startLambdaServer = async (event: any, context: any) => {
     await loadEnv();
-    try {
-        if (isInLambda) {
-            return await startLambdaServer();
-        } else {
-            return startLocalServer();
-        }
-    } catch (error) {
-        logger("Error starting server: %o", error);
-        throw error;
-    }
+    const serverless = serverlessExpress.createServer(app);
+    return serverlessExpress.proxy(serverless, event, context);
 }
 
-startServer();
-
-export const handler = async (event: any, context: any) => {
-    try {
-        const server = await startServer();
-        context.callbackWaitsForEmptyEventLoop = true;
-        return awsServerlessExpress.proxy(server, event, context);
-    } catch (error) {
-        logger("Error handling request: %o", error);
-        throw error;
-    }
-};
+if(isInLambda){
+    exports.handler = Promise.all([async (event: any, context: any) => await startLambdaServer(event, context)]);
+}else if (!isNotLocalEnv()) {
+    module.exports = startLocalServer();
+}else{
+    logger("Error executing as lambda")
+}
