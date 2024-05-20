@@ -15,10 +15,8 @@ Requirements:
     --table-name users ^
     --attribute-definitions ^
         AttributeName=email,AttributeType=S ^
-        AttributeName=dateRegister,AttributeType=S ^
     --key-schema ^
         AttributeName=email,KeyType=HASH ^
-        AttributeName=dateRegister,KeyType=RANGE ^
     --provisioned-throughput ^
         ReadCapacityUnits=5,WriteCapacityUnits=5 ^
     --table-class STANDARD --region us-east-1 --endpoint-url http://localhost:8000
@@ -29,10 +27,8 @@ Requirements:
     --table-name users \
     --attribute-definitions \
         AttributeName=email,AttributeType=S \
-        AttributeName=dateRegister,AttributeType=S \
     --key-schema \
         AttributeName=email,KeyType=HASH \
-        AttributeName=dateRegister,KeyType=RANGE \
     --provisioned-throughput \
         ReadCapacityUnits=5,WriteCapacityUnits=5 \
     --table-class STANDARD --region us-east-1 --endpoint-url http://localhost:8000
@@ -42,4 +38,4 @@ Requirements:
     - `sh ./config/set-project.sh` (In bash terminal Linux/Mac)
 4. config values in **.env** file
 4. Install node libraries with `npm i`
-5. Start local server with `npm run local`
+5. Start local server with `npm run start:local`
