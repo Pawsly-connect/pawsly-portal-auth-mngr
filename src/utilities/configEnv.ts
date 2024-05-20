@@ -4,6 +4,7 @@ import fs from 'fs';
 import debug from "debug";
 
 const logger = debug("paw:configEnv");
+let envValues: { [key: string]: any } = {};
 
 export function isNotLocalEnv() {
     return ["qa", "staging", "production"].includes(process.env.NODE_ENV as string)
@@ -34,7 +35,6 @@ const getParams = (name: string, decrypted: boolean = false) => {
 
 export const loadEnv = async () => {
     try {
-        let envValues: { [key: string]: any } = {};
         if (isNotLocalEnv()) {
             const params = await getParams("secrets_auth_mngr");
             envValues = params as any;
@@ -48,6 +48,9 @@ export const loadEnv = async () => {
     }
 }
 
-export const getEnv = (key: string): string => {
+export const getEnv = async (key: string): Promise<string> => {
+    if(!Object.keys(envValues).length){
+        await loadEnv();
+    }
     return process.env[key] || '';
 }

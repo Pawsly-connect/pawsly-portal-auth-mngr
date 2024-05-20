@@ -7,7 +7,7 @@ const logger = debug("paw:userVerification.interactor");
 const userVerification = (dynamoRepository: DynamoRepository) => async (body: any) => {
     try {
         await dynamoRepository.createInstance()
-        const email = decryptData(body.key);
+        const email = await decryptData(body.key);
         const users = await dynamoRepository.readUser(email);
         if (users.ScannedCount === 1) {
             const dataUser = users.Items[0];
