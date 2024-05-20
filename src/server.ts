@@ -47,6 +47,7 @@ startServer();
 export const handler = async (event: any, context: any) => {
     try {
         const server = await startServer();
+        context.callbackWaitsForEmptyEventLoop = true;
         return awsServerlessExpress.proxy(server, event, context);
     } catch (error) {
         logger("Error handling request: %o", error);
