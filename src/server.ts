@@ -8,7 +8,6 @@ const isInLambda = !!process.env.LAMBDA_TASK_ROOT;
 const logger = debug("paw:server");
 
 const startLocalServer = async () => {
-    await loadEnv();
     const server = http.createServer(app);
     const port: any = Number(getEnv('PORT')) || 3000;
 
@@ -23,16 +22,11 @@ const startLocalServer = async () => {
     return server;
 }
 
-const startLambdaServer = (event: any, context: any) => {
-    const serverless = serverlessExpress.createServer(app);
-    return serverlessExpress.proxy(serverless, event, context);
-}
+loadEnv();
 
 if(isInLambda){
-    exports.handler = async (event: any, context: any) => {
-        await loadEnv();
-        return startLambdaServer(event, context);
-    };
+    const serverless = serverlessExpress.createServer(app);
+    exports.handler = (event: any, context: any) => serverlessExpress.proxy(serverless, event, context);
 }else if (!isNotLocalEnv()) {
     module.exports = startLocalServer();
 }else{
