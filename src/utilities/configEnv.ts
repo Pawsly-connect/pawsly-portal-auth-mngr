@@ -23,11 +23,11 @@ const getParams = (name: string, decrypted: boolean = false) => {
         client.send(command).then((response) => {
             const parameters = JSON.parse(response.Parameter?.Value as string);
             logger("Parameters loaded: %o", parameters);
-            client.destroy();
             resolve(parameters);
         }).catch((err) => {
-            client.destroy();
             reject(new Error(err));
+        }).finally(() => {
+            client.destroy();
         });
     });
 }

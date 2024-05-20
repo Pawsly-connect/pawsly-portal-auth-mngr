@@ -1,18 +1,15 @@
 import http from 'http';
 import app from './index';
 import debug from "debug";
-import { getEnv, isNotLocalEnv, loadEnv } from './utilities/configEnv';
-import serverlessExpress from 'aws-serverless-express';
+import { loadEnv } from './utilities/configEnv';
+import awsServerlessExpress from 'aws-serverless-express';
 
 const isInLambda = !!process.env.LAMBDA_TASK_ROOT;
 const logger = debug("paw:server");
 
-const startLocalServer = async () => {
-    await loadEnv();
+const startLocalServer = () => {
     const server = http.createServer(app);
-    const port: any = Number(getEnv('PORT')) || 3000;
-
-    app.set('port', port);
+    const port: any = Number(process.env.PORT) || 3000;
 
     server.listen(port);
     server.on('error', (error: any) => {
@@ -20,22 +17,39 @@ const startLocalServer = async () => {
         throw error;
     });
     server.on('listening', () => {
-        logger(`listen on ${port}`);
+        logger(`Server is listening on port ${port}`);
     });
 
     return server;
 }
 
-const startLambdaServer = async (event: any, context: any) => {
-    await loadEnv();
-    const serverless = serverlessExpress.createServer(app);
-    return serverlessExpress.proxy(serverless, event, context);
+const startLambdaServer = async () => {
+    const server = awsServerlessExpress.createServer(app);
+    return server;
 }
 
-if(isInLambda){
-    exports.handler = (event: any, context: any) => startLambdaServer(event, context);
-}else if (!isNotLocalEnv()) {
-    module.exports = startLocalServer();
-}else{
-    logger("Error executing as lambda")
+const startServer = async () => {
+    await loadEnv();
+    try {
+        if (isInLambda) {
+            return await startLambdaServer();
+        } else {
+            return startLocalServer();
+        }
+    } catch (error) {
+        logger("Error starting server: %o", error);
+        throw error;
+    }
 }
+
+startServer();
+
+export const handler = async (event: any, context: any) => {
+    try {
+        const server = await startServer();
+        return awsServerlessExpress.proxy(server, event, context);
+    } catch (error) {
+        logger("Error handling request: %o", error);
+        throw error;
+    }
+};
