@@ -12,8 +12,6 @@ const startLocalServer = async () => {
     const server = http.createServer(app);
     const port: any = Number(getEnv('PORT')) || 3000;
 
-    app.set('port', port);
-
     server.listen(port);
     server.on('error', (error: any) => {
         logger(error);
@@ -32,7 +30,7 @@ const startLambdaServer = async (event: any, context: any) => {
 }
 
 if(isInLambda){
-    exports.handler = Promise.all([async (event: any, context: any) => await startLambdaServer(event, context)]);
+    exports.handler = async (event: any, context: any) => await startLambdaServer(event, context);
 }else if (!isNotLocalEnv()) {
     module.exports = startLocalServer();
 }else{
