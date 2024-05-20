@@ -22,8 +22,6 @@ const startLocalServer = async () => {
     return server;
 }
 
-loadEnv();
-
 if(isInLambda){
     const serverless = serverlessExpress.createServer(app);
     exports.handler = (event: any, context: any) => serverlessExpress.proxy(serverless, event, context);

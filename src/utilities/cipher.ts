@@ -2,9 +2,9 @@ import cryptoNode from 'node:crypto';
 import crypto from 'crypto';
 import { getEnv } from './configEnv';
 
-export function hashData(data: string) {
+export async function hashData(data: string) {
     try {
-        const hashMethod = getEnv('HASH_METHOD');
+        const hashMethod = await getEnv('HASH_METHOD');
         const hash = cryptoNode.createHash(hashMethod);
         return hash.update(data).digest('hex');
     } catch (error: any) {
@@ -12,13 +12,13 @@ export function hashData(data: string) {
     }
 }
 
-export function encryptData(data: string) {
+export async function encryptData(data: string) {
     try {
-        const cipherMethod = getEnv('CIPHER_METHOD');
-        const keySecret = getEnv('KEY_AES');
-        const keyIv = getEnv('KEY_IV');
-        const key = hashData(keySecret).substring(0, 32);
-        const encryptionIV = hashData(keyIv).substring(0, 16);
+        const cipherMethod = await getEnv('CIPHER_METHOD');
+        const keySecret = await getEnv('KEY_AES');
+        const keyIv = await getEnv('KEY_IV');
+        const key = (await hashData(keySecret)).substring(0, 32);
+        const encryptionIV = (await hashData(keyIv)).substring(0, 16);
         const cipher = cryptoNode.createCipheriv(cipherMethod, key, encryptionIV);
         return Buffer.from(
             cipher.update(data, 'utf8', 'hex') + cipher.final('hex')
@@ -28,13 +28,13 @@ export function encryptData(data: string) {
     }
 }
 
-export function decryptData(encryptedData: WithImplicitCoercion<string> | { [Symbol.toPrimitive](hint: "string"): string; }) {
+export async function decryptData(encryptedData: WithImplicitCoercion<string> | { [Symbol.toPrimitive](hint: "string"): string; }) {
     try {
-        const cipherMethod = getEnv('CIPHER_METHOD');
-        const keySecret = getEnv('KEY_AES');
-        const keyIv = getEnv('KEY_IV');
-        const key = hashData(keySecret).substring(0, 32);
-        const encryptionIV = hashData(keyIv).substring(0, 16);
+        const cipherMethod = await getEnv('CIPHER_METHOD');
+        const keySecret = await getEnv('KEY_AES');
+        const keyIv = await getEnv('KEY_IV');
+        const key = (await hashData(keySecret)).substring(0, 32);
+        const encryptionIV = (await hashData(keyIv)).substring(0, 16);
         const buff = Buffer.from(encryptedData, 'base64');
         const decipher = cryptoNode.createDecipheriv(cipherMethod, key, encryptionIV);
         return (
@@ -48,8 +48,8 @@ export function decryptData(encryptedData: WithImplicitCoercion<string> | { [Sym
 
 export async function decryptRequest(cipherText: string) {
     try {
-        const encryptionMethod = getEnv('ENCRYPT_METHOD');
-        const keyPem = getEnv('KEY_PEM');
+        const encryptionMethod = await getEnv('ENCRYPT_METHOD');
+        const keyPem = await getEnv('KEY_PEM');
         const keyPemImported = await importPrivateKey(keyPem, encryptionMethod);
         const array: any = atob(cipherText).split(',');
         const message = new Uint8Array(array as ArrayBuffer);
