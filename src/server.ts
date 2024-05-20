@@ -23,14 +23,12 @@ const startLocalServer = async () => {
     return server;
 }
 
-const startLambdaServer = async (event: any, context: any) => {
-    await loadEnv();
-    const serverless = serverlessExpress.createServer(app);
-    return serverlessExpress.proxy(serverless, event, context);
-}
-
 if(isInLambda){
-    exports.handler = async (event: any, context: any) => await startLambdaServer(event, context);
+    exports.handler = async (event: any, context: any) => {
+        await loadEnv();
+        const serverless = serverlessExpress.createServer(app);
+        serverlessExpress.proxy(serverless, event, context);
+    };
 }else if (!isNotLocalEnv()) {
     module.exports = startLocalServer();
 }else{
