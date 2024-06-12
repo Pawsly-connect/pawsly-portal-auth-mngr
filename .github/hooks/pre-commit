@@ -1,4 +1,5 @@
 #!/bin/sh
 
-npm run all:fix
+npm run all:fix || exit 1
+npm run test || exit 1
 echo "Pre commit finished"

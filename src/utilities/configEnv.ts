@@ -10,13 +10,12 @@ export function isNotLocalEnv() {
 	return ['qa', 'staging', 'production'].includes(process.env.NODE_ENV as string);
 }
 
-const getParams = (name: string, decrypted: boolean = false) => {
+const getParams = (name: string) => {
 	const client = new SSMClient({
 		region: process.env.REGION,
 	});
 	const input = {
 		Name: name,
-		WithDecryption: decrypted,
 	};
 	const command = new GetParameterCommand(input);
 	return new Promise((resolve, reject) => {
@@ -35,13 +34,17 @@ const getParams = (name: string, decrypted: boolean = false) => {
 	});
 };
 
-export const loadEnv = async () => {
+const loadEnv = async () => {
 	try {
 		if (isNotLocalEnv()) {
-			const params = await getParams('secrets_auth_mngr');
-			envValues = params as any;
+			const params: any = await Promise.all([getParams('secrets_auth_mngr')]);
+			let allParams: object = {};
+			for (const param of params) {
+				allParams = { ...allParams, ...param };
+			}
+			envValues = allParams;
 		} else {
-			envValues = dotenv.parse(fs.readFileSync('.env'));
+			envValues = dotenv.parse(fs.readFileSync('.env.local'));
 		}
 		dotenv.populate(process.env as any, envValues, { override: true });
 		logger('Variables de entorno cargadas');
@@ -54,5 +57,5 @@ export const getEnv = async (key: string): Promise<string> => {
 	if (!Object.keys(envValues).length) {
 		await loadEnv();
 	}
-	return process.env[key] || '';
+	return process.env[key] as string;
 };

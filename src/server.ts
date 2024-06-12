@@ -1,7 +1,7 @@
 import http from 'http';
 import app from './index';
 import debug from 'debug';
-import { getEnv, isNotLocalEnv, loadEnv } from './utilities/configEnv';
+import { getEnv, isNotLocalEnv } from './utilities/configEnv';
 import serverlessExpress from 'aws-serverless-express';
 
 const isInLambda = !!process.env.LAMBDA_TASK_ROOT;
@@ -9,7 +9,7 @@ const logger = debug('paw:server');
 
 const startLocalServer = async () => {
 	const server = http.createServer(app);
-	const port: any = Number(getEnv('PORT')) || 3000;
+	const port: any = Number(await getEnv('PORT')) || 3001;
 
 	server.listen(port);
 	server.on('error', (error: any) => {
