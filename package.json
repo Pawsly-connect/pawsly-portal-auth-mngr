@@ -10,10 +10,10 @@
     "prettier:fix": "prettier '**/*{ts,js,json,html,css,scss}' --write",
     "all:fix": "npm run prettier:fix && npm run lint:fix",
     "build": "npm run all:fix && tsc",
-    "start:local": "cross-env NODE_ENV=local DEBUG=paw:* DEBUG_COLORS=false nodemon .",
+    "start:local": "docker-compose up -d && cross-env NODE_ENV=local DEBUG=paw:* DEBUG_COLORS=false nodemon .",
     "start": "cross-env DEBUG=paw:* node .",
-    "test": "cross-env NODE_ENV=local KEY_AES=123456123456123456 KEY_IV=abc123abc123 DEBUG=paw:* mocha --timeout 10000 --require ts-node/register 'test/**/*.spec.ts' --exit",
-    "test:coverage": "cross-env NODE_ENV=local KEY_AES=123456123456123456 KEY_IV=abc123abc123 DEBUG=paw:* nyc --reporter=lcov mocha --require ts-node/register 'test/**/*.spec.ts' --exit"
+    "test": "cross-env NODE_ENV=local mocha --require ts-node/register 'test/**/*.spec.ts' --timeout 10000 --exit",
+    "test:coverage": "cross-env NODE_ENV=local nyc --reporter=lcov --reporter=text mocha --require ts-node/register 'test/**/*.spec.ts' --timeout 10000 --exit"
   },
   "repository": {
     "type": "git",
