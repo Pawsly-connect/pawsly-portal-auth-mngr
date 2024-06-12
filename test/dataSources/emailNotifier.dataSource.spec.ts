@@ -16,6 +16,5 @@ describe('Email notifier datasource', () => {
 	const emailDatasource = new emailNotifier();
 	const templates = new emailTemplates();
 	const stubRenderTemplate = sandbox.stub(templates, 'render');
-	it('renderTemplate (success)', async () => {
-	});
+	it('renderTemplate (success)', async () => {});
 });
